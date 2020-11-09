@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Hyouka
+namespace Pixel
 {
     #define _UBYTE_MAX_       255
     #define _SHORT_MIN_       (-32768)

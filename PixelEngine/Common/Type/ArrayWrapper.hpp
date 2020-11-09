@@ -4,7 +4,7 @@
 #include <cassert>
 #include <queue>
 
-namespace Hyouka
+namespace Pixel
 {
     template<typename type>
     using Vector = std::vector<type>;

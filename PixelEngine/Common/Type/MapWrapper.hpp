@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <map>
 
-namespace Hyouka
+namespace Pixel
 {
     template<typename key, typename value>
     using HashMap = std::unordered_map<key, value>;

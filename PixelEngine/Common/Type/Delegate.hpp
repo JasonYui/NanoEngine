@@ -1,7 +1,7 @@
 #pragma once
 #include <tuple>
 
-namespace Hyouka
+namespace Pixel
 {
     namespace TypeTraits
     {
@@ -20,7 +20,7 @@ namespace Hyouka
     }
 }
 
-namespace Hyouka
+namespace Pixel
 {
     template<typename Func, typename... Args>
     class Delegate
