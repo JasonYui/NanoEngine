@@ -1,25 +1,25 @@
 #include "TaskManager.hpp"
 #include <functional>
 #include <type_traits>
-#include "PixelEngine/Common/Type/CommonMarco.hpp"
+#include "NanoEngine/Common/Type/CommonMarco.hpp"
 
-using namespace Pixel;
+using namespace Nano;
 
-Pixel::TaskManager::TaskManager()
+Nano::TaskManager::TaskManager()
 {
     
 }
 
-Pixel::TaskManager::~TaskManager()
+Nano::TaskManager::~TaskManager()
 {
 }
 
-bool Pixel::TaskManager::Init()
+bool Nano::TaskManager::Init()
 {
     return Init(std::thread::hardware_concurrency());
 }
 
-bool Pixel::TaskManager::Init(uint16_t threadSize)
+bool Nano::TaskManager::Init(uint16_t threadSize)
 {
     m_ThreadSize = threadSize;
 
@@ -32,7 +32,7 @@ bool Pixel::TaskManager::Init(uint16_t threadSize)
     return true;
 }
 
-void Pixel::TaskManager::Close()
+void Nano::TaskManager::Close()
 {
     std::unique_lock<std::mutex> lock(m_Mutex);
     m_IsClosed = true;
@@ -45,12 +45,12 @@ void Pixel::TaskManager::Close()
     m_ThreadSize = 1;
 }
 
-void Pixel::TaskManager::Update(float dt)
+void Nano::TaskManager::Update(float dt)
 {
 
 }
 
-bool Pixel::TaskManager::HasUnprocessTask(uint32_t threadId) const
+bool Nano::TaskManager::HasUnprocessTask(uint32_t threadId) const
 {
     ASSERT(threadId < m_ThreadSize)
 
@@ -70,7 +70,7 @@ bool Pixel::TaskManager::HasUnprocessTask(uint32_t threadId) const
     return false;
 }
 
-void Pixel::TaskManager::ProcessTask(uint32_t threadId)
+void Nano::TaskManager::ProcessTask(uint32_t threadId)
 {
     for(;;)
     {

@@ -1,7 +1,7 @@
 #pragma once
-#include "PixelEngine/Common/Type/BasicType.hpp"
+#include "NanoEngine/Common/Type/BasicType.hpp"
 
-namespace Pixel
+namespace Nano
 {
     enum class TaskPriority : uint8_t
     {

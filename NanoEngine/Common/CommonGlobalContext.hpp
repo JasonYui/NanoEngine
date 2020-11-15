@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Pixel
+namespace Nano
 {
     class CommonGlobalContext
     {

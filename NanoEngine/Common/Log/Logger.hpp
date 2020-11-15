@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
-#include "PixelEngine/Common/Type/BasicType.hpp"
-#include "PixelEngine/Common/Type/StringWrapper.hpp"
+#include "NanoEngine/Common/Type/BasicType.hpp"
+#include "NanoEngine/Common/Type/StringWrapper.hpp"
 
-namespace Pixel
+namespace Nano
 {
     enum class LogLevel : uint8_t
     {

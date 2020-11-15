@@ -3,9 +3,9 @@
 #include <stdexcept>
 #include <iostream>
 
-using namespace Pixel;
+using namespace Nano;
 
-namespace Pixel
+namespace Nano
 {
     template<typename ... T>
     static String StringFormat(const std::string& format, T ... args)
@@ -22,13 +22,13 @@ namespace Pixel
 }
 
 template<typename... T>
-void Pixel::Logger::LogMessage(LogLevel level, const char* file, uint32_t line, const char* module, const String& format, T... args)
+void Nano::Logger::LogMessage(LogLevel level, const char* file, uint32_t line, const char* module, const String& format, T... args)
 {
     String message = StringFormat(format, args...);
     String output = StringFormat("Log from file {0} line {1} module {2}: {3}", file, line, module, message);
     std::cout << format << std::endl;
 }
-void Pixel::Logger::LogMessage(LogLevel level, const char* file, uint32_t line, const char* module, const String& format)
+void Nano::Logger::LogMessage(LogLevel level, const char* file, uint32_t line, const char* module, const String& format)
 {
     std::cout << format << std::endl;
 }

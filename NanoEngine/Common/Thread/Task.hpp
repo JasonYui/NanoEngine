@@ -2,11 +2,11 @@
 #include <functional>
 #include <future>
 #include <memory>
-#include "PixelEngine/Common/CommonGlobalContext.hpp"
-#include "PixelEngine/Common/Thread/TaskManager.hpp"
-#include "PixelEngine/Common/Thread/TaskPriority.hpp"
+#include "NanoEngine/Common/CommonGlobalContext.hpp"
+#include "NanoEngine/Common/Thread/TaskManager.hpp"
+#include "NanoEngine/Common/Thread/TaskPriority.hpp"
 
-namespace Pixel
+namespace Nano
 {
     template<class T>
     class Task
