@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "NanoEngine/Common/Type/BasicType.hpp"
+#include "NanoEngine/Common/Type/TypeDef.hpp"
 #include "NanoEngine/Common/Type/StringWrapper.hpp"
 
 namespace Nano

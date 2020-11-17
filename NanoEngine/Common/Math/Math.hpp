@@ -3,7 +3,7 @@
 #include <cmath>
 #include <initializer_list>
 #include <nmmintrin.h>
-#include "NanoEngine/Common/Type/BasicType.hpp"
+#include "NanoEngine/Common/Type/TypeDef.hpp"
 #include "NanoEngine/Common/Type/CommonMarco.hpp"
 #include "NanoEngine/Common/Type/Limit.hpp"
 #include "NanoEngine/Common/Log/Logger.hpp"

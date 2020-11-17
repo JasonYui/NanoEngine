@@ -1,6 +1,6 @@
 #pragma once
 
-#include "NanoEngine/Common/Type/BasicType.hpp"
+#include "NanoEngine/Common/Type/TypeDef.hpp"
 
 namespace Nano
 {

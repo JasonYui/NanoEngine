@@ -1,5 +1,5 @@
 #pragma once
-#include "NanoEngine/Common/Type/BasicType.hpp"
+#include "NanoEngine/Common/Type/TypeDef.hpp"
 #include "NanoEngine/Common/Type/ArrayWrapper.hpp"
 #include "NanoEngine/Common/IRuntimeModule.hpp"
 #include "NanoEngine/Common/Thread/TaskPriority.hpp"
