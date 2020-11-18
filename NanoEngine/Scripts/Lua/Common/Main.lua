@@ -1,6 +1,6 @@
 package.path = package.path .. ";c:/Code/NanoEngine/NanoEngine/Scripts/Lua/?.lua";
 
-require("Common.Global");
+require("Common.GlobalMeta");
 require("Common.Class");
 
 Base = Class(Base);
@@ -17,5 +17,9 @@ function Child:Ctor()
     self.m_Sex = "Man";
 end
 
+function Child:GetName()
+    return self.m_Name;
+end
+
 local child = Child:New();
-print(child.m_Name, child.m_Sex, child.m_Level);
+print(child:GetName());

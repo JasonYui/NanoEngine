@@ -2,25 +2,28 @@ Object = {};
 Object.__index = Object;
 
 function Object:New()
-    local instance = {};
-    setmetatable(instance, Object);
-    return instance;
 end
 
 function Object:Ctor()
 end
 
-function Object:Dtor()
+local function CreateInstanceTemplate(class)
+    return {
+        __class = class,
+        __type = class.__type
+    };
 end
 
-function Object:CreateInstance(class, args)
-    print(class.__type);
+local function CreateInstance(class, args)
     if (class == Object) then
         return Object;
     end
 
     local instance = {};
-    local baseInstance = Object:CreateInstance(class.__base);
+    local baseInstance = CreateInstance(class.__base);
+    instance.__type = class.__type;
+    instance.__index = instance;
+    instance.__base = baseInstance;
     setmetatable(instance, baseInstance);
 
     if (args == nil) then
@@ -40,7 +43,7 @@ local function CreateClass(base)
     class.__base = base;
     class.__type = nil;
     class.New = function (object, ...)
-        return Object:CreateInstance(class, {...})
+        return CreateInstance(class, {...})
     end
     setmetatable(class, base);
 
