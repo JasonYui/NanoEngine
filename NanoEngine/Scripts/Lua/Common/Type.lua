@@ -1,6 +1,6 @@
 function TypeOf(obj)
     if (type(obj) == 'table') then
-        return obj.__type;
+        return obj.__typeName;
     else
         return type(obj);
     end

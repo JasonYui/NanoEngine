@@ -7,10 +7,16 @@ end
 function Object:Ctor()
 end
 
-local function CreateInstanceTemplate(class)
+local function CreateInstanceTemplate(class, baseInstance)
     return {
-        __class = class,
-        __type = class.__type
+        __type = class,
+        __typeName = class.__typeName,
+        __base = baseInstance,
+
+        __index = function(table, key)
+            print(class == table, table, table.__typeName, key);
+            return table.__base[key] or table.__type[key];
+        end
     };
 end
 
@@ -19,11 +25,9 @@ local function CreateInstance(class, args)
         return Object;
     end
 
-    local instance = {};
     local baseInstance = CreateInstance(class.__base);
-    instance.__type = class.__type;
-    instance.__index = instance;
-    instance.__base = baseInstance;
+    local instance = CreateInstanceTemplate(class, baseInstance);
+
     setmetatable(instance, baseInstance);
 
     if (args == nil) then
@@ -41,7 +45,7 @@ local function CreateClass(base)
     local class = {};
     class.__index = class;
     class.__base = base;
-    class.__type = nil;
+    class.__typeName = nil;
     class.New = function (object, ...)
         return CreateInstance(class, {...})
     end

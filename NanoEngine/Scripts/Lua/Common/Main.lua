@@ -10,6 +10,10 @@ function Base:Ctor()
     self.m_Level = 1;
 end
 
+function Base:GetLevel()
+    return self.m_Level;
+end
+
 Child = Class(Child, Base);
 
 function Child:Ctor()
@@ -22,4 +26,4 @@ function Child:GetName()
 end
 
 local child = Child:New();
-print(child:GetName());
+print(child:GetLevel());

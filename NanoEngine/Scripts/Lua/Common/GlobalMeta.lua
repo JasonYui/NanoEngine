@@ -12,8 +12,8 @@ setmetatable(_G, {
             return;
         end
 
-        if (type(value) == "table" and rawget(value, "__type") == nil) then
-            value.__type = key;
+        if (type(value) == "table" and rawget(value, "__typeName") == nil) then
+            value.__typeName = key;
         end
 
         rawset(table, key, value);
@@ -33,6 +33,6 @@ setmetatable(_G, {
             return;
         end
 
-        rawget(table, key);
+        return rawget(table, key);
     end
 })
