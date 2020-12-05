@@ -4,11 +4,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(PROJECT_ABSOLUTE_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../)
 set(ENGINE_THIRD_PARTIES_PATH ${PROJECT_ABSOLUTE_SOURCE_DIR}NanoEngine/ThirdParties)
+set(LLVM_PATH C:/Code/LLVM)
 message(${ENGINE_THIRD_PARTIES_PATH})
 
 project(Game)
 
 include_directories("${PROJECT_SOURCE_DIR}/")
+include_directories("C:/Code/LLVM/include/")
 
 add_subdirectory(NanoEngine)
 add_subdirectory(Game)

@@ -1,6 +1,7 @@
 #pragma once
 #include <string_view>
 #include <tuple>
+
 #define TSTR(s) Ubpa::USRefl::detail::TNameImpl1([] { struct tmp { static constexpr decltype(auto) get() { return (s); } }; return tmp{}; }())
 namespace Ubpa::USRefl::detail {
   template<class C, C... cs>struct TStr{using Tag=TStr; template<class T>static constexpr bool NameIs(T={}){return std::is_same_v<T,Tag>;}
@@ -31,6 +32,9 @@ namespace Ubpa::USRefl::detail {
   }
 }
 
+#define STR(s) \
+Nano::Refl::Detail::TNameImpl1([] {struct tmp { static constexpr decltype(auto) get() { return (s); } }; return tmp{}; }())
+
 namespace Nano::Refl::Detail
 {
     template<typename C, C... cs>struct TStr
@@ -52,7 +56,8 @@ namespace Nano::Refl::Detail
         return TStr<Char, T::get()[N]...>(); 
     }
 
-    template <typename T> constexpr auto TNameImpl1(T) 
+    template <typename T> 
+    constexpr auto TNameImpl1(T) 
     { 
         using Char = std::decay_t<decltype(T::get()[0])>;
         return TNameImpl2<Char, T>(std::make_index_sequence<sizeof(T::get()) / sizeof(Char) - 1>()); 
@@ -94,7 +99,7 @@ namespace Nano::Refl::Detail
         return t.bases.Accumulate(
             std::forward<Acc>(acc), 
             [&](auto&& r, auto b) {
-                if constexpr (b.is_virtual) 
+                if constexpr (b.isVirtual) 
                     return DFS_Acc<D+1>(b.info, std::forward<F>(f), std::forward<decltype(r)>(r));
                 else 
                     return DFS_Acc<D+1>(b.info, std::forward<F>(f), std::forward<F>(f)(std::forward<decltype(r)>(r), b.info, D+1));
@@ -106,11 +111,11 @@ namespace Nano::Refl::Detail
     constexpr void NV_Var(TI info, U&& u, F&& f) 
     {
         info.fields.ForEach([&](auto k){
-            if constexpr(!k.is_static&&!k.is_func)
+            if constexpr(!k.isStatic && !k.isFunc)
                 std::forward<F>(f)(k, std::forward<U>(u).*(k.value));
         });
         info.bases.ForEach([&](auto b){
-            if constexpr(!b.is_virtual)
+            if constexpr(!b.isVirtual)
                 NV_Var(b.info,b.info.Forward(std::forward<U>(u)), std::forward<F>(f));
         });
     }
@@ -123,7 +128,7 @@ namespace Nano::Refl
     {
         Value value;
         static constexpr bool hasValue = true;
-        constexpr NameValuePair(Value v) : value(v) {}
+        constexpr NameValuePair(Value v) : value{ v } {}
         template<typename T> constexpr bool operator==(T v) const 
         {
             if constexpr(std::is_same_v<Value,T>)
@@ -215,22 +220,141 @@ namespace Nano::Refl
     };
 
     template<typename Name, typename Value> 
-    struct Attribution : NameValuePair<Name, Value>
+    struct Attr : NameValuePair<Name, Value>
     {
-        constexpr Attribution(Value v) : NameValuePair<Name, Value>{ v } {}
+        constexpr Attr(Value v) : NameValuePair<Name, Value>{ v } {}
     };
 
     template<typename Name> 
-    struct Attribution<Name, void> : NameValuePair<Name, void>
+    struct Attr<Name, void> : NameValuePair<Name, void>
     {
         constexpr Attr(Name) {} //why?
     };
 
-    template<typename T>
-    struct AttributionList
+    template<typename... T>
+    struct AttrList : ElemList<T...>
     {
-        
+        constexpr AttrList(T...args) : ElemList<T...>{ args... } {}
     };
+
+    template<bool s, bool f> 
+    struct FTraitsB 
+    { 
+        static constexpr bool isStatic = s, isFunc = f; 
+    };
+    
+    template<typename T> 
+    struct FTraits : FTraitsB<true, false> {}; // default is enum
+    
+    template<typename U, typename T> 
+    struct FTraits<T U::*> : FTraitsB<false, std::is_function_v<T>> {};
+    
+    template<typename T> 
+    struct FTraits<T*> : FTraitsB<true, std::is_function_v<T>>{}; // static member
+
+    template<typename Name, typename T, typename AList> 
+    struct Field : FTraits<T>, NameValuePair<Name, T>
+    { 
+        AList attrs; 
+        constexpr Field(Name, T v, AList as = {}) : NameValuePair<Name, T>{ v }, attrs{ as } {} 
+    };
+
+    template<typename...Fs>
+    struct FieldList : ElemList<Fs...> 
+    { 
+        constexpr FieldList(Fs...fs) : ElemList<Fs...>{ fs... } {} 
+    };
+
+    template<typename T> struct TypeInfo; // TypeInfoBase, name, fields, attrs
+    
+    template<typename T, bool IsVirtual = false> 
+    struct Base
+    { 
+        static constexpr auto info = TypeInfo<T>{}; 
+        static constexpr bool isVirtual = IsVirtual; 
+    };
+
+    template<typename...Bs> 
+    struct BaseList : ElemList<Bs...> 
+    { 
+        constexpr BaseList(Bs... bs) : ElemList<Bs...>{ bs... } {} 
+    };
+
+    template<typename...Ts> 
+    struct TypeInfoList : ElemList<Ts...> 
+    { 
+        constexpr TypeInfoList(Ts...ts) : ElemList<Ts...>{ ts... } {} 
+    };
+
+    template<typename T, typename... Bases> 
+    struct TypeInfoBase 
+    {
+        using Type = T; 
+        static constexpr BaseList bases{ Bases{}... };
+        template<typename U> 
+        static constexpr auto&& Forward(U&& derived) noexcept 
+        {
+            if constexpr (std::is_same_v<std::decay_t<U>, U>) 
+                return static_cast<Type&&>(derived); // right
+            else if constexpr (std::is_same_v<std::decay_t<U>&, U>) 
+                return static_cast<Type&>(derived); // left
+            else 
+                return static_cast<const std::decay_t<U>&>(derived); // std::is_same_v<const std::decay_t<U>&, U>
+        }
+        static constexpr auto VirtualBases() 
+        {
+            return bases.Accumulate(
+                ElemList<>{}, 
+                [](auto acc, auto base) {
+                    auto concated = base.info.VirtualBases().Accumulate(acc, [](auto acc, auto b) { 
+                        return acc.Insert(b); 
+                    });
+                    if constexpr (!base.isVirtual) 
+                        return concated; 
+                    else 
+                        return concated.Insert(base.info); 
+                }
+            );
+        }
+        template<typename R, typename F> 
+        static constexpr auto DFS_Acc(R&& r, F&& f) 
+        {
+            return Detail::DFS_Acc<0>(
+                TypeInfo<Type>{},
+                std::forward<F>(f),
+                VirtualBases().Accumulate(
+                    f(std::forward<R>(r), TypeInfo<Type>{}, 0),
+                    [&](auto&& acc, auto vb)
+                    { 
+                        return std::forward<F>(f)(std::forward<decltype(acc)>(acc), vb, 1); 
+                    }
+                )
+            ); 
+        }
+        template<typename F>
+        static constexpr void DFS_ForEach(F&&f)
+        {
+            DFS_Acc(0,[&](auto,auto t,auto d){ std::forward<F>(f)(t,d); return 0; });
+        }
+        template<typename U, typename Func> 
+        static constexpr void ForEachVarOf(U&& obj, Func&& func) 
+        {
+            VirtualBases().ForEach([&](auto vb) 
+            { 
+                vb.fields.ForEach([&](auto fld)
+                { 
+                    if constexpr (!fld.is_static && !fld.is_func) 
+                        std::forward<Func>(func)(fld, std::forward<U>(obj).*(fld.value)); 
+                }); 
+            });
+            Detail::NV_Var(TypeInfo<Type>{}, std::forward<U>(obj), std::forward<Func>(func)); 
+        }
+  };
+
+    template<typename Name, typename Char, size_t N> Attr(Name, const Char(&)[N])->Attr<Name, std::basic_string_view<Char>>;
+    template<typename Name> Attr(Name)->Attr<Name, void>;
+    template<typename Name, typename T, typename AList> Field(Name, T, AList)->Field<Name, T, AList>;
+    template<typename Name, typename T> Field(Name, T)->Field<Name, T, AttrList<>>;
 }
 
 namespace Ubpa::USRefl {

@@ -1,13 +1,12 @@
-#pragma onmce
+#pragma once
+#include "NanoEngine/Common/Reflection/Reflection.hpp"
 
-namespace Nano
+using namespace Ubpa::USRefl;
+
+struct Point
 {
-    struct Point
-    {
-        [[aaaa]]
-        float x;
-        float y;
+    float x;
+    float y;
 
-        float Sum(){return x + y;}
-    };
-}
+    float Sum() { return x + y; }
+};
