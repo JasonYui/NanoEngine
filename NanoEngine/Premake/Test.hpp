@@ -1,10 +1,17 @@
+#ifdef ATTRIBUTE
+#define PROPERTY(...) __attribute__((annotate(#__VA_ARGS__)))
+#else
+#define PROPERTY(...)
+#endif
+
 namespace Nano
 {
+
     namespace Test
     {
         struct Point
         {
-            [[name(x)]]
+            PROPERTY(x)
             float x;
             float y;
 
@@ -13,7 +20,6 @@ namespace Nano
 
         struct Vector3
         {
-            [[name(x)]]
             float x;
             float y;
             float z;
@@ -24,7 +30,6 @@ namespace Nano
 
     struct Vector4
         {
-            [[name(x)]]
             float x;
             float y;
             float z;

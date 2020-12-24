@@ -1,6 +1,9 @@
 #pragma once
 #include <clang-c/Index.h>
 #include <stack>
+#include <vector>
+#include <string>
+#include "NanoEngine/Premake/MetaInfo.hpp"
 
 namespace Nano::Premake
 {
@@ -26,6 +29,25 @@ namespace Nano::Premake
         
 
         void ProcessCursorInfo(CXCursor cursor, CXCursor parent, CXClientData clientData);
-        std::stack<CursorInfo> m_StoredCursorInfos;
+        void GenMetaInfo();
+
+        std::string GetNameSpace()
+        {
+            std::string ret;
+            for (auto&& sub : m_NameSpace)
+            {
+                if (ret.length() != 0)
+                    ret += ("::" + sub);
+                else
+                    ret += sub;
+            }
+
+            return ret;
+        }
+
+        std::vector<CursorInfo> m_StoredCursorInfos;
+        std::vector<std::string> m_NameSpace;
     };
+
+    void Parse(const char* fileName);
 }

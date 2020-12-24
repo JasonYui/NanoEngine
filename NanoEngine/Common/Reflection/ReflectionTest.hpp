@@ -1,12 +1,27 @@
 #pragma once
-#include "NanoEngine/Common/Reflection/Reflection.hpp"
+#include "NanoEngine/Common/Type/TypeDef.hpp"
 
-using namespace Ubpa::USRefl;
+using namespace Nano;
 
-struct Point
+namespace Nano
 {
-    float x;
-    float y;
+    namespace Test
+    {
+        void Fuck(int a)
+        {
+            a++;
+        }
 
-    float Sum() { return x + y; }
-};
+        struct ATTRIBUTE(reflection) Point
+        {
+        public:
+            ATTRIBUTE(xxx|a = b)
+            ATTRIBUTE(c)
+            const float x = 0.5f;
+        private:
+            float y = 1;
+
+            const int Sum(int a, int b = 1) { return a + b; }
+        };
+    }
+}

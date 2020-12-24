@@ -28,21 +28,21 @@ namespace Nano::Premake
         Type type{ Type::_VARIABLE };
         AccessModifier access{ AccessModifier::_PUBLIC };
         std::vector<Attr> attrs;
-        std::vector<DeclSpecifier> declSpecifiers;
+        //std::vector<DeclSpecifier> declSpecifiers;
         std::vector<std::string> pointerOperators; // *, &, &&
         std::string name;
         std::vector<std::string> qualifiers; // const, volatile, &, &&
     };
 
-    struct FunctionInfo
+    struct MethonInfo
     {
         AccessModifier access{ AccessModifier::_PUBLIC };
         std::vector<Attr> attrs;
-        std::vector<DeclSpecifier> declSpecifiers;
+        //std::vector<DeclSpecifier> declSpecifiers;
         std::vector<std::string> pointerOperators; // *, &, &&
         std::string name;
         std::string initializer; // expression or {expression}
-        std::vector<Parameter> parameters;
+        //std::vector<Parameter> parameters;
         std::vector<std::string> qualifiers; // const, volatile, &, &&
         bool isTemplate{ false };
     };
@@ -56,6 +56,8 @@ namespace Nano::Premake
             _ENUM
         };
 
+        Type type = Type::_CLASS;
         std::vector<std::string> nameSpace;
+        std::vector<FieldInfo> fields;
     };
 }
