@@ -12,7 +12,9 @@ project(Game)
 
 include_directories("${PROJECT_SOURCE_DIR}/")
 include_directories("${LLVM_PATH}/include/")
-include_directories("${MONO_PATH}/include/mono-2.0/")
+if(MONO_CLR)
+    include_directories("${MONO_PATH}/include/mono-2.0/")
+endif()
 
 add_subdirectory(NanoEngine)
 add_subdirectory(Game)
