@@ -11,88 +11,6 @@
 
 using namespace Nano;
 
-namespace Nano
-{
-    class Math
-    {
-    public:
-        template<typename T>
-        static void AddByElement(const T* a, const T* b, T* result, size_t count)
-        {
-            for (int i = 0; i < count; ++i)
-            {
-                result[i] = a[i] + b[i];
-            }
-        }
-
-        template<typename T>
-        static void SubByElement(const T* a, const T* b, T* result, size_t count)
-        {
-#ifdef USE_SIMD
-            
-#else
-            for (int i = 0; i < count; ++i)
-            {
-                result[i] = a[i] - b[i];
-            }
-#endif
-        }
-
-        template<typename T>
-        static void MulByElement(const T* a, const T* b, T* result, size_t count)
-        {
-            for (int i = 0; i < count; ++i)
-            {
-                result[i] = a[i] * b[i];
-            }
-        }
-
-        template<typename T>
-        static T DotProduct(const T* a, const T* b, const size_t count)
-        {
-            T* temp = new T[count];
-            T result = static_cast<T>(0);
-
-            MulByElement<T>(a, b, temp, count);
-
-            for (size_t i = 0; i < count; i++)
-            {
-                result += temp[i];
-            }
-
-            delete[] temp;
-            return result;
-        }
-
-    public:
-        template<typename T>
-        static void SubByElementSIMD(const T* a, const T* b, T* result, size_t count)
-        {
-            for (int i = 0; i < count; ++i)
-            {
-                result[i] = a[i] - b[i];
-            }
-        }
-
-        template<>
-        static void SubByElementSIMD(const float* a, const float* b, float* result, size_t count)
-        {
-            for (size_t i = 0; i < count; i += 4)
-            {
-                __m128 lTemp = _mm_loadu_ps(a + i);
-                __m128 rTemp = _mm_loadu_ps(b + i);
-                __m128 tResult = _mm_sub_ps(lTemp, rTemp);
-                _mm_storeu_ps(result + i, tResult);
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                
-            }
-        }
-    };
-}
-
 namespace Math
 {
     const float PI = 3.141592654f;
@@ -100,6 +18,11 @@ namespace Math
 
     inline float Pow(float x, float y) { return std::pow(x, y); }
     inline float Sqrt(float rhs) noexcept { return std::sqrt(rhs); }
+
+    inline size_t Align(size_t x, size_t alignment)
+    {
+        return (x + alignment - 1) & ~(alignment - 1);
+    }
 
     template<typename T>
     inline T GetRange(T raw, int start, int end);

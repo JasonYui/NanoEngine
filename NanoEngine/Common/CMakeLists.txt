@@ -2,7 +2,6 @@ set(SRC_LIST)
 
 file(GLOB_RECURSE 
     SRC_LIST 
-    SRC_LIST 
     *.hpp
     *.inl
     *.cpp
