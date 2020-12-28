@@ -4,8 +4,6 @@ file(GLOB_RECURSE
     SRC_LIST 
     *.hpp
     *.cpp
-    ./*.hpp
-    ./*.cpp
 )
 
 set(SRC_FILES ${SRC_LIST})

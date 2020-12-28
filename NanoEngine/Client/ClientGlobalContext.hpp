@@ -1,9 +1,8 @@
 #pragma once
-#include "NanoEngine/Common/CommonGlobalContext.hpp"
 
 namespace Nano
 {
-    class ClientGlobalContext : CommonGlobalContext
+    class ClientGlobalContext
     {
     public:
         bool Init();
