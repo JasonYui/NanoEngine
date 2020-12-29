@@ -27,7 +27,7 @@ namespace Nano
         static const uint8_t PATTERN_ALLOC = 0xFD;
         static const uint8_t PATTERN_FREE = 0xFE;
 
-        Allocator() = default;
+        Allocator() = delete;
         Allocator(size_t dataSize, size_t pageSize, size_t alignment);
         ~Allocator();
 

@@ -2,9 +2,9 @@
 #include "NanoEngine/Common/Memory/Allocator.hpp"
 
 using namespace Nano;
-TEST(AllocatorTest, test1) 
+TEST(AllocatorTest, Test_OperatorNew) 
 {
-    Allocator alloc = Allocator();
+    Allocator alloc = Allocator(4, 4 * 12, 4);
     void*p = alloc.Allocate();
     alloc.Free(p);
 }
