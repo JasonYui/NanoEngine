@@ -26,11 +26,12 @@ set(GTEST_DEBUG ${GTEST_DEBUG_LIST})
 set(GTEST_RELEASE ${GTEST_RELEASE_LIST})
 
 
-add_library (Test ${SRC_FILES})
+add_executable (EngineTest ${SRC_FILES})
 
 include_directories("${ENGINE_THIRD_PARTIES_PATH}/GTest/Include/")
 
-target_link_libraries(Common 
+target_link_libraries(EngineTest 
+    Common
     Client
     debug ${GTEST_DEBUG}
     optimized ${GTEST_RELEASE}
