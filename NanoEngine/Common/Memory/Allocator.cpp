@@ -40,7 +40,7 @@ namespace Nano
     {
         if (!m_FreeList)
         {
-            PageHeader* newPage = reinterpret_cast<PageHeader*>((malloc(m_PageSize)));
+            PageHeader* newPage = reinterpret_cast<PageHeader*>(malloc(m_PageSize));
             ++m_PageCount;
             m_BlockCount += m_BlocksPerPage;
             m_FreeBlockCount += m_BlocksPerPage;
