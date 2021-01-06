@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="disc-brake.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Panuon.UI.Silver" Version="1.1.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="disc-brake.png" />
+  </ItemGroup>
+
+</Project>
