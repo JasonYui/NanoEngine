@@ -5,6 +5,7 @@ namespace Nano
 {
     class ArcheType
     {
+        friend class ArcheTypeManager;
     public:
         template<typename... TC>
         void Init();

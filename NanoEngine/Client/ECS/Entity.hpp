@@ -4,6 +4,7 @@ namespace Nano
 {
     struct Entity
     {
+        friend class EntityManager;
     public:
         size_t GetIndex() { return m_Index; }
         size_t GetVersion() { return m_Version; }
