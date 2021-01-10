@@ -6,11 +6,11 @@ namespace Nano
     {
         friend class EntityManager;
     public:
-        size_t GetIndex() { return m_Index; }
-        size_t GetVersion() { return m_Version; }
-        ~Entity();
+        ~Entity() = default;
+        size_t GetIndex() { return index; }
+        size_t GetVersion() { return version; }
     private:
-        size_t m_Index{ 0 };
-        size_t m_Version{ 0 };
+        size_t index{ 0 };
+        size_t version{ 0 };
     };
 }

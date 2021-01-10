@@ -1,12 +1,18 @@
 #pragma once
 #include "NanoEngine/Common/Type/TypeDef.hpp"
+#include "NanoEngine/Common/Type/ArrayWrapper.hpp"
 
 namespace Nano
 {
+    class Chunk;
+
     class ArcheType
     {
         friend class ArcheTypeManager;
+        friend class Chunk;
     public:
+        ~ArcheType();
+
         template<typename... TC>
         void Init();
 
@@ -18,17 +24,21 @@ namespace Nano
 
         template<typename T1, typename T2, typename... TC>
         void InitImpl();
-        
 
-        int32_t m_ComponentCount{ 0 };
+        uint32_t m_ComponentCount{ 0 };
         size_t* m_TypeHashes;
+        size_t* m_Offsets;
         size_t m_ComponentTotalSize{ 0 };
+
+        Vector<Chunk*> m_Chunks;
+        Chunk* m_FreeChunk;
     };
 
     template<typename... TC>
     void ArcheType::Init()
     {
         m_TypeHashes = new size_t[sizeof...(TC)]();
+        m_Offsets = new size_t[sizeof...(TC)]();
         InitImpl<TC...>();
     }
 
@@ -52,10 +62,9 @@ namespace Nano
         for (i; i >= 0 && hash < m_TypeHashes[i]; i--)
         {
             m_TypeHashes[i + 1] = m_TypeHashes[i];
-            //SizeOfs[i + 1] = SizeOfs[i];
+            m_Offsets[i + 1] = m_Offsets[i] + sizeof(T);
         }
         m_TypeHashes[i + 1] = hash;
-        //SizeOfs[i + 1] = sizeof(T);
 
         m_ComponentCount += 1;
         m_ComponentTotalSize += sizeof(T);

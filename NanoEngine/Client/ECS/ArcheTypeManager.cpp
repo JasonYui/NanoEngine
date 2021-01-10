@@ -1,4 +1,6 @@
 #include "ArcheTypeManager.hpp"
+#include "NanoEngine/Client/ECS/ArcheType.hpp"
+#include "NanoEngine/Client/ECS/Chunk.hpp"
 
 namespace Nano
 {
@@ -11,5 +13,17 @@ namespace Nano
         }
 
         m_TypeLookup.clear();
+    }
+    Chunk* ArcheTypeManager::GetFreeChunk(ArcheType* archeType)
+    {
+        if (archeType->m_FreeChunk != nullptr)
+            return archeType->m_FreeChunk;
+
+        Chunk* chunk = new Chunk();
+        chunk->Init(archeType);
+        archeType->m_Chunks.push_back(chunk);
+        archeType->m_FreeChunk = chunk;
+
+        return chunk;
     }
 }
