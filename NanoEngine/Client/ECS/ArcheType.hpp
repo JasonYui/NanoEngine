@@ -1,6 +1,7 @@
 #pragma once
 #include "NanoEngine/Common/Type/TypeDef.hpp"
 #include "NanoEngine/Common/Type/ArrayWrapper.hpp"
+#include "NanoEngine/Client/ECS/ComponentType.hpp"
 
 namespace Nano
 {
@@ -11,14 +12,33 @@ namespace Nano
         friend class ArcheTypeManager;
         friend class Chunk;
     public:
+        ArcheType() = default;
+
+        ArcheType(ComponentTypeSet typeSet);
+
         ~ArcheType();
 
         template<typename... TC>
         void Init();
 
+        size_t CreateComponentInstance();
+
+        const ComponentTypeSet& GetComponentTypeSet() const { return m_TypeSet; }
+
         template<typename T>
         int GetComponentIndex();
+
+        size_t AllocFreeBuffer();
+
+        void* GetComponent(ComponentType cmptType, size_t index);
+
+        template<typename T>
+        T* GetComponent(size_t index);
     private:
+        void InitLayout();
+
+        inline bool IsChunksFull();
+
         template<typename T>
         void InitImpl();
 
@@ -30,8 +50,14 @@ namespace Nano
         size_t* m_Offsets;
         size_t m_ComponentTotalSize{ 0 };
 
+        ComponentTypeSet m_TypeSet;
+
         Vector<Chunk*> m_Chunks;
         Chunk* m_FreeChunk;
+
+        size_t m_ChunkCapacity{ 0 };
+        Vector<size_t> m_TypeOffsets;
+        size_t m_StoredEntityCount{ 0 };
     };
 
     template<typename... TC>

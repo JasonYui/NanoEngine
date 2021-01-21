@@ -14,16 +14,38 @@ namespace Nano
 
         m_TypeLookup.clear();
     }
-    Chunk* ArcheTypeManager::GetFreeChunk(ArcheType* archeType)
+
+    ArcheType* ArcheTypeManager::GetArcheType(ComponentTypeSet typeSet)
     {
-        if (archeType->m_FreeChunk != nullptr)
-            return archeType->m_FreeChunk;
+        ArcheType* archeType = GetExistArcheType(typeSet);
+        if (archeType == nullptr)
+            archeType = CreateArcheType(typeSet);
 
-        Chunk* chunk = new Chunk();
-        chunk->Init(archeType);
-        archeType->m_Chunks.push_back(chunk);
-        archeType->m_FreeChunk = chunk;
+        assert(archeType != nullptr);
+        return archeType;
+    }
 
-        return chunk;
+    ArcheType* ArcheTypeManager::GetExistArcheType(const ComponentTypeSet& typeSet)
+    {
+        if (m_TypeLookup.find(typeSet.Size()) != m_TypeLookup.end())
+        {
+            for (auto item : m_TypeLookup[typeSet.Size()])
+            {
+                if (IsArcheTypeMatch(item, typeSet))
+                    return item;
+            }
+        }
+        return nullptr;
+    }
+    bool ArcheTypeManager::IsArcheTypeMatch(ArcheType* archeType, const ComponentTypeSet& typeSet)
+    {
+        return archeType->GetComponentTypeSet() == typeSet;
+    }
+
+    ArcheType* ArcheTypeManager::CreateArcheType(const ComponentTypeSet& typeSet)
+    {
+        ArcheType* archeType = new ArcheType(typeSet);
+        m_TypeLookup[archeType->m_ComponentCount].push_back(archeType);
+        return archeType;
     }
 }

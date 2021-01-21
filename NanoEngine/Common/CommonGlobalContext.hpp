@@ -10,7 +10,6 @@ namespace Nano
         void Close();
         void Update(float dt);
     public:
-        class TaskManager* m_TaskManager;
     };
 
     extern CommonGlobalContext g_CommonGloablContext;

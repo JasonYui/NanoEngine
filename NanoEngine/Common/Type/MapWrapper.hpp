@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <map>
+#include <set>
 
 namespace Nano
 {
@@ -12,4 +13,7 @@ namespace Nano
 
     template<typename key, typename value>
     using Map = std::map<key, value>;
+
+    template<typename key>
+    using Set = std::set<key>;
 }

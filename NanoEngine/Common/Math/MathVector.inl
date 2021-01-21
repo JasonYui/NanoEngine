@@ -58,13 +58,13 @@ namespace Math
         T Dot3(const Vectors& v) 
         {
             T result;
-            Math::DotProduct<T>(*this, v, result);
+            //Math::DotProduct<T>(*this, v, result);
             return result;
         }
 
         void Normalize()
         {
-            T length = Math::DotProduct<T>(*this, *this, N);
+            T length;// = Math::DotProduct<T>(*this, *this, N);
 
             length = static_cast<T>(Sqrt(length));
             float turn = 1.0f / length;

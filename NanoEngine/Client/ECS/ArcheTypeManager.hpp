@@ -1,27 +1,25 @@
 #pragma once
 #include "NanoEngine/Common/Type/MapWrapper.hpp"
 #include "NanoEngine/Common/Type/ArrayWrapper.hpp"
+#include "NanoEngine/Client/ECS/ArcheType.hpp"
 
 namespace Nano
 {
     class Chunk;
-    class ArcheType;
 
     class ArcheTypeManager
     {
     public:
         void Clear();
 
+        ArcheType* GetArcheType(ComponentTypeSet typeSet);
+
         template<typename... T>
         ArcheType* GetArcheType();
-
-        Chunk* GetFreeChunk(ArcheType* archeType);
     private:
-        template<typename... T>
-        ArcheType* TryGetExistArcheType();
+        ArcheType* GetExistArcheType(const ComponentTypeSet& typeSet);
 
-        template<typename... T>
-        bool IsArcheTypeMatch(const ArcheType& archeType);
+        bool inline IsArcheTypeMatch(ArcheType* archeType, const ComponentTypeSet& typeSet);
 
         template<typename T>
         void GetTypeHashes(size_t* hashes, int32_t size);
@@ -29,62 +27,18 @@ namespace Nano
         template<typename T1, typename T2, typename... TS>
         void GetTypeHashes(size_t* hashes, int32_t size);
 
-        template<typename... T>
-        ArcheType* CreateArcheType();
+        ArcheType* CreateArcheType(const ComponentTypeSet& typeSet);
 
-        HashMap<int32_t, Vector<ArcheType*>> m_TypeLookup;
+        HashMap<size_t, Vector<ArcheType*>> m_TypeLookup;
     };
 
     template<typename... T>
     ArcheType* ArcheTypeManager::GetArcheType()
     {
-        ArcheType* archeType = TryGetExistArcheType<T...>();
-        if (archeType != nullptr)
-            return archeType;
-
-        return CreateArcheType<T...>();
-    }
-
-    template<typename... T>
-    ArcheType* ArcheTypeManager::TryGetExistArcheType()
-    {
-        int32_t componentCount = sizeof...(T);
-        if (m_TypeLookup.find(componentCount) != m_TypeLookup.end())
-        {
-            for (auto item : m_TypeLookup[componentCount])
-            {
-                if (IsArcheTypeMatch<T...>(*item))
-                    return item;
-            }
-        }
-        return nullptr;
-    }
-
-    template<typename... T>
-    ArcheType* ArcheTypeManager::CreateArcheType()
-    {
-        ArcheType* archeType = new ArcheType();
-        archeType->Init<T...>();
-        m_TypeLookup[archeType->m_ComponentCount].push_back(archeType);
-        return archeType;
-    }
-
-    template<typename... T>
-    bool ArcheTypeManager::IsArcheTypeMatch(const ArcheType& archeType)
-    {
-        int32_t size = sizeof...(T);
-        if (archeType.m_ComponentCount != size)
-            return false;
-
-        size_t* tempHashes = new size_t[size]();
-        GetTypeHashes<T...>(tempHashes, size);
-        for (int32_t i = 0; i < size; ++i)
-        {
-            if (archeType.m_TypeHashes[i] != tempHashes[i])
-                return false;
-        }
-
-        return true;
+        constexpr std::array types = { ComponentType::Of<T>()... };
+        ComponentTypeSet typeSet;
+        typeSet.Insert(std::span{ types });
+        return GetArcheType(typeSet);
     }
 
     template<typename T>

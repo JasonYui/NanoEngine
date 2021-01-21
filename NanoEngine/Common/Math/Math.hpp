@@ -48,7 +48,7 @@ namespace Math
     Vectors<T, N> operator+(const Vectors<T, N>& lhs, const Vectors<T, N>& rhs)
     {
         Vectors<T, N> result;
-        Math::AddByElement<T>(lhs, rhs, result, N);
+        //Math::AddByElement<T>(lhs, rhs, result, N);
         return result;
     }
 
@@ -56,7 +56,7 @@ namespace Math
     Vectors<T, N> operator-(const Vectors<T, N>& lhs, const Vectors<T, N>& rhs)
     {
         Vectors<T, N> result;
-        Math::AddByElement<T>(lhs, rhs, result, N);
+        //Math::AddByElement<T>(lhs, rhs, result, N);
         return result;
     }
 

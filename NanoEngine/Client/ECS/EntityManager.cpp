@@ -1,4 +1,5 @@
 #include "EntityManager.hpp"
+#include <stdexcept>
 
 namespace Nano
 {
@@ -7,6 +8,29 @@ namespace Nano
         std::for_each(m_EntityInfos.begin(), m_EntityInfos.end(), [](EntityInfo* info) {delete info; });
         m_EntityInfos.clear();
         m_FreeEntityInfo = nullptr;
+
+        delete m_ArcheTypeManager;
+    }
+
+    inline bool EntityManager::IsValid(const Entity& entity)
+    {
+        if (entity.index < m_EntityInfos.size())
+        {
+            return m_EntityInfos[entity.index]->version == entity.version;
+        }
+        return false;
+    }
+
+    void EntityManager::Detech(const Entity& entity, Span<ComponentType> components)
+    {
+        if (!IsValid(entity))
+            throw std::invalid_argument("[EntityManager::Detech] entity is invalid");
+
+        EntityInfo* info = m_EntityInfos[entity.index];
+        ComponentTypeSet typeSet = info->archeType->GetComponentTypeSet();
+        typeSet.Delete(components);
+        ArcheType* archeType = m_ArcheTypeManager->GetArcheType(typeSet);
+        typeSet.Foreach([&](auto type) {});
     }
 
     void EntityManager::FreeEntity(const Entity& entity)

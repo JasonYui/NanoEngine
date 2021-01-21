@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 namespace Nano
 {
     #define _interface_ class
@@ -13,4 +14,11 @@ namespace Nano
     #else
     #define ATTRIBUTE(...)
     #endif
+
+    #ifdef OUT
+    #undef OUT
+    #endif
+    #define OUT
+
+    using ubyte = uint8_t;
 }

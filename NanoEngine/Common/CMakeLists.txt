@@ -11,6 +11,8 @@ if(NOT MONO_CLR)
     list(FILTER SRC_LIST EXCLUDE REGEX "CSDelegate+" )
 endif()
 
+list(FILTER SRC_LIST EXCLUDE REGEX "Thread+" )
+
 set(SRC_FILES ${SRC_LIST})
 
 set(CROSSGUID_DEBUG ${ENGINE_THIRD_PARTIES_PATH}/CrossGuid/Lib/Debug/crossguid-dgb.lib)

@@ -1,5 +1,6 @@
 #pragma
-#include "NanoEngine/Common/Type/TypeDef.hpp"
+#include "Common/Type/TypeDef.hpp"
+#include "Common/Type/ArrayWrapper.hpp"
 
 namespace Nano
 {
@@ -8,20 +9,21 @@ namespace Nano
     class Chunk
     {
     public:
-        Chunk();
-        ~Chunk();
-        bool Init(ArcheType* archeType);
-
+        static void Init(const Vector<size_t>& alignments, const Vector<size_t>& sizes, OUT Vector<size_t>& offsets, OUT size_t& capacity);
+        static constexpr int32_t k_ChunkSize = 16 * 1024;
+        ubyte* Data() { return m_Buffer.data(); }
     private:
-        struct Property
+        struct AlignmentInfo
         {
-            alignas(8) ArcheType* archeType = nullptr;
-            alignas(8) size_t unitCount = 0;
+            size_t alignment = 0;
+            size_t index = 0;
+            bool operator<(const AlignmentInfo& rhs) const noexcept
+            {
+                return alignment < rhs.alignment;
+            }
         };
 
-        void* m_Buffer;
-        Property* m_Property;
-        void** m_ComponentList{ nullptr };
+        Array<ubyte, k_ChunkSize> m_Buffer;
 
     };
 }

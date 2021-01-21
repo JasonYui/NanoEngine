@@ -36,15 +36,12 @@ namespace Test
 
     TEST(ECSTest, Test_EntityCreateAndFree)
     {
-        EntityManager entityManager;
-        ArcheTypeManager* atm = new ArcheTypeManager();
+        EntityManager entityManager(new ArcheTypeManager());
         for (int i = 0; i < 10; ++i)
         {
-            Entity e = entityManager.CreateEntity<A, B, C>(atm);
+            Entity e = entityManager.CreateEntity<A, B, C>();
             std::cout << e.GetIndex() << e.GetVersion() << std::endl;
             entityManager.FreeEntity(e);
         }
-
-        delete atm;
     }
 }

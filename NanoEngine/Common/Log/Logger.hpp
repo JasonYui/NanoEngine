@@ -18,8 +18,8 @@ namespace Nano
     {
     public:
         template<typename... T>
-        static void LogMessage(LogLevel level, const char* file, uint32_t line, const char* module, const String& format, T... args);
-        static void LogMessage(LogLevel level, const char* file, uint32_t line, const char* module, const String& format);
+        static void LogMessage(LogLevel level, const char* file, uint32_t line, const char* _module, const String& format, T... args);
+        static void LogMessage(LogLevel level, const char* file, uint32_t line, const char* _module, const String& format);
     };
 
 #ifndef LOG_INFO

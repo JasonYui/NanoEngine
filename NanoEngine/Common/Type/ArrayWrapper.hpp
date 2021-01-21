@@ -3,6 +3,7 @@
 #include <array>
 #include <cassert>
 #include <queue>
+#include <span>
 
 namespace Nano
 {
@@ -44,4 +45,7 @@ namespace Nano
 
     template<typename T>
     using Queue = std::queue<T>;
+
+    template<typename T>
+    using Span = std::span<T>;
 }
