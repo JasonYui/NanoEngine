@@ -1,44 +1,25 @@
 #pragma once
-#include <iostream>
-#include "NanoEngine/Common/Type/TypeDef.hpp"
-#include "NanoEngine/Common/Type/StringWrapper.hpp"
+#include "spdlog/spdlog.h"
 
 namespace Nano
 {
-    enum class LogLevel : uint8_t
-    {
-        _INFO,
-        _WARNING,
-        _ERROR,
-        _CRITICAL,
-        k_SIZE
-    };
-
-    class Logger
-    {
-    public:
-        template<typename... T>
-        static void LogMessage(LogLevel level, const char* file, uint32_t line, const char* _module, const String& format, T... args);
-        static void LogMessage(LogLevel level, const char* file, uint32_t line, const char* _module, const String& format);
-    };
-
 #ifndef LOG_INFO
 #define LOG_INFO(format, ...)\
-    Logger::LogMessage(LogLevel::_INFO, __FILE__, __LINE__, __FUNCTION__, format, ## __VA_ARGS__);
+    spdlog::info(format, ## __VA_ARGS__);
 #endif // !LOG_INFO
 
 #ifndef LOG_WARNING
 #define LOG_WARNING(format, ...)\
-    Logger::LogMessage(LogLevel::_WARNING, __FILE__, __LINE__, __FUNCTION__, format, ## __VA_ARGS__);
+    spdlog::warn(format, ## __VA_ARGS__);
 #endif // !LOG_WARNING
 
 #ifndef LOG_ERROR
 #define LOG_ERROR(format, ...)\
-    Logger::LogMessage(LogLevel::_ERROR, __FILE__, __LINE__, __FUNCTION__, format, ## __VA_ARGS__);
+    spdlog::error(format, ## __VA_ARGS__);
 #endif // !LOG_ERROR
 
 #ifndef LOG_CRITICAL
 #define LOG_CRITICAL(format, ...)\
-    Logger::LogMessage(LogLevel::_CRITICAL, __FILE__, __LINE__, __FUNCTION__, format, ## __VA_ARGS__);
+    spdlog::critical(format, ## __VA_ARGS__);
 #endif // !LOG_CRITICAL
 }

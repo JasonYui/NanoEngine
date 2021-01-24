@@ -1,9 +1,4 @@
 #include "Chunk.hpp"
-#include <malloc.h>
-#include <new>
-#include "Common/Type/TypeDef.hpp"
-#include "Common/Type/ArrayWrapper.hpp"
-#include "Client/ECS/ArcheType.hpp"
 #include <iostream>
 
 namespace Nano
@@ -24,7 +19,7 @@ namespace Nano
         size_t sumSize = 0;
         for (size_t s : sizes)
             sumSize += s;
-        capacity = k_ChunkSize / sumSize;
+        capacity = Chunk::k_ChunkSize / sumSize;
 
         offsets.reserve(alignments.size());
         size_t curOffset = 0;

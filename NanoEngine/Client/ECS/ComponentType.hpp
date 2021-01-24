@@ -4,60 +4,37 @@
 #include "Common/Type/ArrayWrapper.hpp"
 #include "Common/Type/TypeInfo.hpp"
 #include <functional>
+#include <typeindex>
 
 namespace Nano
 {
-    class ComponentType
+    class CmptType
     {
     public:
-        constexpr ComponentType(size_t hash) : m_Hash(hash) {};
+        explicit CmptType() = default;
+        explicit CmptType(size_t hash, size_t alignment, size_t size) : m_Hash(hash), m_Alignment(alignment), m_Size(size) {};
+        explicit CmptType(const CmptType& cmptType) : m_Hash(cmptType.m_Hash), m_Alignment(cmptType.m_Alignment), m_Size(cmptType.m_Size) {};
+        explicit CmptType(CmptType&& cmptType) noexcept : m_Hash(cmptType.m_Hash), m_Alignment(cmptType.m_Alignment), m_Size(cmptType.m_Size) {};
         template<typename T>
-        static constexpr ComponentType Of() { return ComponentType{TypeHash<T>}; }
+        static CmptType Of() { return CmptType{ typeid(T).hash_code(), alignof(T), sizeof(T) }; };
 
-        constexpr bool operator< (const ComponentType& rhs) const noexcept { return m_Hash < rhs.m_Hash; }
-        constexpr bool operator<=(const ComponentType& rhs) const noexcept { return m_Hash <= rhs.m_Hash; }
-        constexpr bool operator> (const ComponentType& rhs) const noexcept { return m_Hash > rhs.m_Hash; }
-        constexpr bool operator>=(const ComponentType& rhs) const noexcept { return m_Hash >= rhs.m_Hash; }
-        constexpr bool operator==(const ComponentType& rhs) const noexcept { return m_Hash == rhs.m_Hash; }
-        constexpr bool operator!=(const ComponentType& rhs) const noexcept { return m_Hash != rhs.m_Hash; }
+        size_t GetHash() const { return m_Hash; }
+        size_t GetAlignment() const { return m_Alignment; }
+        size_t GetSize() const { return m_Size; }
+
+        template<typename T>
+        bool IsType() const { return *this == CmptType::Of<T>(); }
+
+        CmptType& operator= (const CmptType& rhs) = default;
+        constexpr bool operator< (const CmptType& rhs) const noexcept { return m_Hash < rhs.m_Hash; }
+        constexpr bool operator<=(const CmptType& rhs) const noexcept { return m_Hash <= rhs.m_Hash; }
+        constexpr bool operator> (const CmptType& rhs) const noexcept { return m_Hash > rhs.m_Hash; }
+        constexpr bool operator>=(const CmptType& rhs) const noexcept { return m_Hash >= rhs.m_Hash; }
+        constexpr bool operator==(const CmptType& rhs) const noexcept { return m_Hash == rhs.m_Hash; }
+        constexpr bool operator!=(const CmptType& rhs) const noexcept { return m_Hash != rhs.m_Hash; }
     private:
-        size_t m_Hash;
-    };
-
-    class ComponentTypeSet
-    {
-        friend class ArcheType;
-    public:
-        inline void Insert(Span<const ComponentType> types)
-        {
-            for (const auto& item : types)
-            {
-                m_Data.insert(item);
-            }
-        }
-
-        inline void Delete(Span<ComponentType> types)
-        {
-            for (const auto& item : types)
-            {
-                m_Data.erase(item);
-            }
-        }
-
-        inline bool Contains(const ComponentType& type)
-        {
-            return m_Data.contains(type);
-        }
-
-        inline size_t Size() const { return m_Data.size(); }
-
-        void Foreach(std::function<void(const ComponentType&)> func)
-        {
-            std::for_each(m_Data.begin(), m_Data.end(), func);
-        }
-
-        bool operator==(const ComponentTypeSet& rhs) const noexcept { return m_Data == rhs.m_Data; }
-    private:
-        Set<ComponentType> m_Data;
+        size_t m_Hash{ 0 };
+        size_t m_Alignment{ 0 };
+        size_t m_Size{ 0 };
     };
 }

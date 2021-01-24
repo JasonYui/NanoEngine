@@ -1,105 +1,138 @@
 #pragma once
-#include "NanoEngine/Common/Type/TypeDef.hpp"
-#include "NanoEngine/Common/Type/ArrayWrapper.hpp"
-#include "NanoEngine/Client/ECS/ComponentType.hpp"
+#include "Common/Type/TypeDef.hpp"
+#include "Common/Type/ArrayWrapper.hpp"
+#include "Client/ECS/ComponentType.hpp"
+#include "Chunk.hpp"
+#include <cassert>
+#include <new>
+#include <stdexcept>
+
 
 namespace Nano
 {
-    class Chunk;
-
     class ArcheType
     {
-        friend class ArcheTypeManager;
+        friend class EntityManager;
         friend class Chunk;
+
+        using CmptTypeSet = Set<CmptType>;
     public:
         ArcheType() = default;
-
-        ArcheType(ComponentTypeSet typeSet);
-
         ~ArcheType();
 
         template<typename... TC>
-        void Init();
+        inline void Init();
+        void Init(Set<CmptType> cmptTypeSet);
 
-        size_t CreateComponentInstance();
+        template<typename... TC>
+        bool inline IsSame() const;
+        bool IsSame(const CmptTypeSet& set) const;
 
-        const ComponentTypeSet& GetComponentTypeSet() const { return m_TypeSet; }
+        template<typename... TC>
+        bool ContainsAll() const;
 
+        /// <summary>
+        /// construct components on arche type by default contructor
+        /// </summary>
+        /// <typeparam name="...TC"></typeparam>
+        /// <param name="entityIdx"></param>
+        /// <returns>index in ArcheType</returns>
+        template<typename T1, typename T2, typename... TC>
+        size_t inline Ctor(size_t entityIdx);
+
+        template<typename T1, typename T2, typename... TC>
+        void DefaultCtorOnChunk(size_t indexInChunk);
+
+        template<typename T, typename... Args>
+        void inline CustomCtorOnChunk(size_t indexInChunk, Args... args);
+
+        /// <summary>
+        /// move components from source arche type
+        /// </summary>
+        /// <param name="srcArcheType"></param>
+        /// <param name="idxInSrcArcheType"></param>
+        /// <returns>index in ArcheType</returns>
+        size_t MoveCtor(ArcheType& srcArcheType, size_t idxInSrcArcheType);
+
+        template<typename TC>
+        void DtorOnChunk(size_t idxInArcheType);
+
+        /// <summary>
+        /// dctor components on chunk, call DeleteCmptByIndex after
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <typeparam name="...TC"></typeparam>
+        /// <param name="idxInArcheType"></param>
+        template<typename T1, typename T2, typename... TC>
+        void DtorOnChunk(size_t idxInArcheType);
+
+        template<typename... TC>
+        bool inline IsCmptTypeValid() const;
+
+        const CmptTypeSet& GetCmptTypeSet() const { return m_CmptTypeSet; }
+
+        size_t GetComponentCount() const { return m_CmptTypeSet.size() - 1; }
+
+        /// <summary>
+        /// delete component instance, make sure dtor or move data before delete
+        /// </summary>
+        /// <param name="idxInArcheType"></param>
+        /// <returns> moved entity index </returns>
+        size_t DeleteCmptByIndex(size_t idxInArcheType);
+
+        /// <summary>
+        /// get point to component instance
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="idxInArcheType"></param>
+        /// <returns>T*</returns>
         template<typename T>
-        int GetComponentIndex();
+        T* GetComponent(size_t idxInArcheType);
+
+        /// <summary>
+        /// get point to component instance
+        /// </summary>
+        /// <param name="cmptType"></param>
+        /// <param name="idxInArcheType"></param>
+        /// <returns>ubyte*</returns>
+        ubyte* GetComponent(const CmptType& cmptType, size_t idxInArcheType);
+    private:
+        struct IndexType
+        {
+            size_t index = 0;
+            IndexType(size_t _idx) {
+                index = _idx;
+            };
+        };
+
+        void InitLayout();
+
+        bool IsChunksFull() { return m_Chunks.size() * m_ChunkCapacity <= m_StoredEntityCount; }
 
         size_t AllocFreeBuffer();
 
-        void* GetComponent(ComponentType cmptType, size_t index);
+        template<typename T, typename... Args>
+        void CtorOnChunkImpl(size_t indexInChunk, Args... args);
 
         template<typename T>
-        T* GetComponent(size_t index);
-    private:
-        void InitLayout();
-
-        inline bool IsChunksFull();
+        void DispatchCtor(size_t indexInChunk, size_t entityIdx);
 
         template<typename T>
-        void InitImpl();
+        inline void InitImpl();
 
         template<typename T1, typename T2, typename... TC>
-        void InitImpl();
+        inline void InitImpl();
 
-        uint32_t m_ComponentCount{ 0 };
-        size_t* m_TypeHashes;
-        size_t* m_Offsets;
-        size_t m_ComponentTotalSize{ 0 };
-
-        ComponentTypeSet m_TypeSet;
-
+    private:
         Vector<Chunk*> m_Chunks;
-        Chunk* m_FreeChunk;
 
         size_t m_ChunkCapacity{ 0 };
-        Vector<size_t> m_TypeOffsets;
         size_t m_StoredEntityCount{ 0 };
+
+        Map<CmptType, size_t> m_TypeOffsetMap;
+        CmptTypeSet m_CmptTypeSet;
     };
-
-    template<typename... TC>
-    void ArcheType::Init()
-    {
-        m_TypeHashes = new size_t[sizeof...(TC)]();
-        m_Offsets = new size_t[sizeof...(TC)]();
-        InitImpl<TC...>();
-    }
-
-    template<typename T>
-    int ArcheType::GetComponentIndex()
-    {
-        size_t hash = typeid(T).hash_code();
-        for (size_t i = 0; i < m_ComponentCount; i++)
-        {
-            if (hash == m_TypeHashes[i])
-                return i;
-        }
-        return -1;
-    }
-
-    template<typename T>
-    void ArcheType::InitImpl()
-    {
-        size_t hash = typeid(T).hash_code();
-        int32_t i = m_ComponentCount - 1;
-        for (i; i >= 0 && hash < m_TypeHashes[i]; i--)
-        {
-            m_TypeHashes[i + 1] = m_TypeHashes[i];
-            m_Offsets[i + 1] = m_Offsets[i] + sizeof(T);
-        }
-        m_TypeHashes[i + 1] = hash;
-
-        m_ComponentCount += 1;
-        m_ComponentTotalSize += sizeof(T);
-    }
-
-    template<typename T1, typename T2, typename... TC>
-    void ArcheType::InitImpl()
-    {
-        InitImpl<T1>();
-        InitImpl<T2, TC...>();
-    }
 }
+
+#include "Details/ArcheType.inl"

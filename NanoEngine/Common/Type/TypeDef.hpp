@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "../Log/Logger.hpp"
 
 
 namespace Nano
