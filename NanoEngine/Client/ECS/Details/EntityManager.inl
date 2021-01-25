@@ -20,7 +20,7 @@ namespace Nano
     T* EntityManager::GetComponent(const Entity& entity)
     {
         if (!IsValid(entity))
-            LOG_ERROR("[{0}] entity is invalid", __FUNCTION__);
+            LOG_ERROR(__FUNCTION__, "entity is invalid");
 
         EntityInfo* info = m_EntityInfos[entity.index];
         return info->archeType->GetComponent<T>(info->idxInArcheType);
