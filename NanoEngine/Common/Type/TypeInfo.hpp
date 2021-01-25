@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <string_view>
-#include "ThirdParties/NameOf/Include/nameof.hpp"
+#include "nameof.hpp"
 
 namespace Nano
 {
