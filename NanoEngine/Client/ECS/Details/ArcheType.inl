@@ -80,7 +80,7 @@ namespace Nano
     }
 
     template<typename T, typename... Args>
-    void ArcheType::CustomCtorOnChunk(size_t indexInChunk, Args... args)
+    void ArcheType::CustomCtorOnChunk(size_t indexInChunk, Args&&... args)
     {
         CtorOnChunkImpl<T, Args...>(indexInChunk, args...);
     }

@@ -44,7 +44,7 @@ namespace Nano
         void DefaultCtorOnChunk(size_t indexInChunk);
 
         template<typename T, typename... Args>
-        void inline CustomCtorOnChunk(size_t indexInChunk, Args... args);
+        void inline CustomCtorOnChunk(size_t indexInChunk, Args&&... args);
 
         /// <summary>
         /// move components from source arche type
