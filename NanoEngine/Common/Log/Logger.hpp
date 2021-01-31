@@ -3,6 +3,7 @@
 #define SPDLOG_FMT_EXTERNAL
 #endif
 
+#include <sstream>
 #include "spdlog/spdlog.h"
 
 namespace Nano
