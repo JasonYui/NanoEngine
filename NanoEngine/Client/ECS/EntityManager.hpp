@@ -29,7 +29,7 @@ namespace Nano
         bool IsValid(const Entity& entity);
 
         template<typename TC, typename... Args>
-        void Attach(const Entity& entity, Args... args);
+        void Attach(const Entity& entity, Args&&... args);
 
         template<typename T1, typename T2, typename... TC>
         void Attach(const Entity& entity);

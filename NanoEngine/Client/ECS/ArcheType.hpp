@@ -1,11 +1,9 @@
 #pragma once
-#include "Common/Type/TypeDef.hpp"
+#include "Common/Fwd.hpp"
 #include "Common/Type/ArrayWrapper.hpp"
 #include "Client/ECS/ComponentType.hpp"
 #include "Chunk.hpp"
-#include <cassert>
 #include <new>
-#include <stdexcept>
 
 
 namespace Nano
@@ -44,7 +42,7 @@ namespace Nano
         void DefaultCtorOnChunk(size_t indexInChunk);
 
         template<typename T, typename... Args>
-        void inline CustomCtorOnChunk(size_t indexInChunk, Args... args);
+        void inline CustomCtorOnChunk(size_t indexInChunk, Args&&... args);
 
         /// <summary>
         /// move components from source arche type

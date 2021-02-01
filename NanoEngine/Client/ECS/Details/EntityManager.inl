@@ -20,17 +20,17 @@ namespace Nano
     T* EntityManager::GetComponent(const Entity& entity)
     {
         if (!IsValid(entity))
-            LOG_ERROR(__FUNCTION__, "entity is invalid");
+            LOG_ERROR("entity is invalid")
 
         EntityInfo* info = m_EntityInfos[entity.index];
         return info->archeType->GetComponent<T>(info->idxInArcheType);
     }
 
     template<typename TC, typename... Args>
-    void EntityManager::Attach(const Entity& entity, Args... args)
+    void EntityManager::Attach(const Entity& entity, Args&&... args)
     {
         if (!IsValid(entity))
-            LOG_ERROR("[{0}] entity is invalid", __FUNCTION__);
+            LOG_ERROR("entity is invalid")
 
         EntityInfo* info = m_EntityInfos[entity.index];
         ArcheType* srcArcheType = info->archeType;
@@ -42,7 +42,7 @@ namespace Nano
             ArcheType* dstArcheType = GetArcheType(copyTypeSet);
             // move ctor
             info->idxInArcheType = dstArcheType->MoveCtor(*srcArcheType, info->idxInArcheType);
-            dstArcheType->CustomCtorOnChunk<TC, Args...>(info->index, args...);
+            dstArcheType->CustomCtorOnChunk<TC, Args...>(info->index, std::forward<Args>(args)...);
             info->archeType = dstArcheType;
 
             size_t movedIndex = srcArcheType->DeleteCmptByIndex(info->idxInArcheType);
@@ -57,7 +57,7 @@ namespace Nano
     void EntityManager::Attach(const Entity& entity)
     {
         if (!IsValid(entity))
-            LOG_ERROR("[{0}] entity is invalid", __FUNCTION__);
+            LOG_ERROR("entity is invalid")
 
         EntityInfo* info = m_EntityInfos[entity.index];
         ArcheType* srcArcheType = info->archeType;
@@ -84,7 +84,7 @@ namespace Nano
     void EntityManager::Detach(const Entity& entity)
     {
         if (!IsValid(entity))
-            LOG_ERROR("[{0}] entity is invalid", __FUNCTION__);
+            LOG_ERROR("entity is invalid")
 
         EntityInfo* info = m_EntityInfos[entity.index];
         ArcheType* srcArcheType = info->archeType;
