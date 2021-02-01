@@ -33,6 +33,7 @@ namespace Nano
 #define LOG_CRITICAL(format, ...){\
     std::stringstream ss;\
     ss << "FILE: " << __FILE__ << " LINE: " << __LINE__ << " [" << __FUNCTION__ <<"] " << format;\
-    spdlog::critical(ss.str(), ## __VA_ARGS__);}
+    spdlog::critical(ss.str(), ## __VA_ARGS__);\
+    assert(false);}
 #endif // !LOG_CRITICAL
 }
