@@ -30,8 +30,7 @@ namespace Nano
 
             ubyte* trgCmpt = GetComponent(cmptType, idxInArcheType);
             ubyte* srcCmpt = srcArcheType.GetComponent(cmptType, idxInSrcArcheType);
-            assert(trgCmpt != nullptr);
-            assert(srcCmpt != nullptr);
+            ASSERT(trgCmpt != nullptr && srcCmpt != nullptr);
 
             memmove(trgCmpt, srcCmpt, cmptType.GetSize());
         }
@@ -52,7 +51,7 @@ namespace Nano
         size_t movedIdx = SIZE_MAX;
         size_t chunkIndex = idxInArcheType / m_ChunkCapacity;
         size_t localIndex = idxInArcheType % m_ChunkCapacity;
-        assert(chunkIndex < m_Chunks.size());
+        ASSERT(chunkIndex < m_Chunks.size());
         ubyte* locateBuffer = m_Chunks[chunkIndex]->Data();
 
         if (idxInArcheType == m_StoredEntityCount - 1) // is last entity components
@@ -80,10 +79,10 @@ namespace Nano
                 if (iter != m_TypeOffsetMap.end())
                 {
                     ubyte* src = GetComponent(cmptType, movedIdxInArcheType);
-                    assert(src != nullptr);
+                    ASSERT(src != nullptr);
 
                     ubyte* trg = GetComponent(cmptType, idxInArcheType);
-                    assert(trg != nullptr);
+                    ASSERT(trg != nullptr);
                     if (cmptType.IsType<IndexType>())
                     {
                         movedIdx = reinterpret_cast<IndexType*>(src)->index;
@@ -104,14 +103,14 @@ namespace Nano
 
     ubyte* ArcheType::GetComponent(const CmptType& cmptType, size_t idxInArcheType)
     {
-        assert(idxInArcheType < m_StoredEntityCount);
+        ASSERT(idxInArcheType < m_StoredEntityCount);
 
         auto iter = m_TypeOffsetMap.find(cmptType);
         if (iter != m_TypeOffsetMap.end())
         {
             size_t chunkIdx = idxInArcheType / m_ChunkCapacity;
             size_t idxInChunk = idxInArcheType % m_ChunkCapacity;
-            assert(chunkIdx < m_Chunks.size());
+            ASSERT(chunkIdx < m_Chunks.size());
             ubyte* locateBuffer = m_Chunks[chunkIdx]->Data();
             return locateBuffer + iter->second + idxInChunk * cmptType.GetSize();
         }

@@ -37,7 +37,7 @@ namespace Nano
     {
         size_t indexInFreeChunk = indexInChunk % m_ChunkCapacity;
         Chunk* freeChunk = m_Chunks.back();
-        assert(freeChunk != nullptr);
+        ASSERT(freeChunk != nullptr);
 
         auto result = m_TypeOffsetMap.find(CmptType::Of<T>());
         if (result != m_TypeOffsetMap.end())
@@ -105,7 +105,7 @@ namespace Nano
     template<typename T>
     T* ArcheType::GetComponent(size_t idxInArcheType)
     {
-        assert(idxInArcheType < m_StoredEntityCount);
+        ASSERT(idxInArcheType < m_StoredEntityCount);
 
         CmptType cmptType = CmptType::Of<T>();
         auto iter = m_TypeOffsetMap.find(cmptType);
@@ -113,7 +113,7 @@ namespace Nano
         {
             size_t chunkIdx = idxInArcheType / m_ChunkCapacity;
             size_t idxInChunk = idxInArcheType % m_ChunkCapacity;
-            assert(chunkIdx < m_Chunks.size());
+            ASSERT(chunkIdx < m_Chunks.size());
             ubyte* locateBuffer = m_Chunks[chunkIdx]->Data();
             return reinterpret_cast<T*>(locateBuffer + iter->second + idxInChunk * cmptType.GetSize());
         }
@@ -124,7 +124,7 @@ namespace Nano
     void ArcheType::InitImpl()
     {
         CmptType cmptType = CmptType::Of<T>();
-        assert(m_CmptTypeSet.contains(cmptType) == false);
+        ASSERT(m_CmptTypeSet.contains(cmptType) == false);
 
         m_CmptTypeSet.insert(std::move(cmptType));
     }
