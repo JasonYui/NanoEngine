@@ -13,8 +13,9 @@ namespace Nano
                 float floatValue;
             };
         };
-        BaseInputType m_InputType{ BaseInputType::_None };
-        BaseInputType m_PrevInputType{ BaseInputType::_None };
+        BaseInputType inputType{ BaseInputType::_None };
+        BaseInputType prevInputType{ BaseInputType::_None };
+        float holdTime = 0.0f;
     };
 
 }

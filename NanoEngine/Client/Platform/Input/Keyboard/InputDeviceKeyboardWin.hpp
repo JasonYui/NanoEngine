@@ -13,7 +13,7 @@ namespace Nano
             {VK_F1, Key::_KeyF1}
     };
 
-    class InputDeviceKeyboardWin : InputDeviceKeyboard
+    class InputDeviceKeyboardWin : public InputDeviceKeyboard
     {
     public:
         void HandleMessage(const MSG& msg);

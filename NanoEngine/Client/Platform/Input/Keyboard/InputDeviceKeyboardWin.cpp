@@ -48,8 +48,8 @@ namespace Nano
 #ifdef ENGINE_DEBUG
                 LOG_INFO("{0:d} mapped to: {1:d}", vkey, static_cast<uint32_t>(key));
 #endif
-                const bool pressed = raw->data.keyboard.Message == WM_KEYDOWN || raw->data.keyboard.Message == WM_SYSKEYDOWN;
-                //HandleButton(device_, nextState_, delta_, buttonId, pressed);
+                const bool down = raw->data.keyboard.Message == WM_KEYDOWN || raw->data.keyboard.Message == WM_SYSKEYDOWN;
+                HandleButton(key, down);
             }
 #ifdef ENGINE_DEBUG
             else

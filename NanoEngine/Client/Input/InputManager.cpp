@@ -1,5 +1,6 @@
 #include "InputManager.hpp"
 #include "InputDefine.hpp"
+#include "InputEnum.hpp"
 
 namespace Nano
 {
@@ -9,16 +10,6 @@ namespace Nano
         {
             iter.second->Update(dt);
         }
-    }
-
-    template<typename T>
-    DeviceID InputManager::CreateDevice()
-    {
-        DeviceID id = m_NextDeviceID;
-        T* device = new T();
-	    m_DeviceMap[id] = device;
-        m_NextDeviceID++;
-        return id;
     }
 
     void InputManager::DeleteDevice(DeviceID id)
@@ -31,6 +22,16 @@ namespace Nano
         for (auto& iter : m_DeviceMap)
         {
             if (iter.second->GetBoolKeyDown(key))
+                return true;
+        }
+        return false;
+    }
+
+    bool InputManager::GetBoolKeyRelease(Key key)
+    {
+        for (auto& iter : m_DeviceMap)
+        {
+            if (iter.second->GetBoolKeyRelease(key))
                 return true;
         }
         return false;

@@ -10,7 +10,7 @@ namespace Nano
     {
     public:
         virtual ~IApplication() = default;
-        virtual bool Init() { return true; }
+        virtual bool Init() = 0;
         virtual void Update(float dt) = 0;
         virtual void Close() {};
 

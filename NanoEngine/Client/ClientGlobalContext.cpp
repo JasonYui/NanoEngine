@@ -1,4 +1,5 @@
 #include "ClientGlobalContext.hpp"
+#include "Client/Input/InputManager.hpp"
 
 #ifdef _WINDOWS
 #include "Client/Platform/Application/Win/WinApplication.hpp"
@@ -11,6 +12,7 @@ namespace Nano
 
     ClientGlobalContext::ClientGlobalContext()
     {
+        m_InputManager = new InputManager();
 #ifdef _WINDOWS
         m_Application = new WinApplication();
         m_GfxManager = new D3dGraphicsManager();
@@ -24,6 +26,12 @@ namespace Nano
 
     bool ClientGlobalContext::Init(const WindowDefination& windowDef)
     {
+        if (!m_InputManager->Init())
+        {
+            LOG_ERROR("meet error when init InputManager");
+            return false;
+        }
+
         if (!m_Application->Init())
         {
             LOG_ERROR("meet error when init Application");
@@ -49,11 +57,16 @@ namespace Nano
         m_Application->Close();
         delete m_Application;
         m_Application = nullptr;
+
+        m_InputManager->Close();
+        delete m_InputManager;
+        m_InputManager = nullptr;
     }
 
     void ClientGlobalContext::Update(float dt)
     {
         m_Application->Update(dt);
+        m_InputManager->Update(dt);
     }
 }
 

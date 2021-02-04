@@ -9,6 +9,7 @@ namespace Nano
     {
     public:
         WinApplication() = default;
+        bool Init();
         void Update(float dt) final;
 
         void CreateDisplayWindow(const WindowDefination& define) final;

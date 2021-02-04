@@ -1,8 +1,46 @@
 #include "WinApplication.hpp"
 #include "Common/Type/TypeDef.hpp"
+#include "Client/ClientGlobalContext.hpp"
+#include "Client/Input/InputManager.hpp"
+#include "Client/Platform/Input/Keyboard/InputDeviceKeyboardWin.hpp"
 
 namespace Nano
 {
+    bool WinApplication::Init()
+    {
+        UINT deviceNum = 0;
+        if (GetRawInputDeviceList(nullptr, &deviceNum, sizeof(RAWINPUTDEVICELIST)) != 0)
+        {
+            LOG_ERROR("call GetRawInputDeviceList failed");
+            return false;
+        }
+
+        PRAWINPUTDEVICELIST rawDevices = (PRAWINPUTDEVICELIST)malloc(sizeof(RAWINPUTDEVICELIST) * deviceNum);
+        if (rawDevices == nullptr) 
+        {
+            LOG_ERROR("malloc PRAWINPUTDEVICELIST failed");
+            return false;
+        }
+
+        if (GetRawInputDeviceList(rawDevices, &deviceNum, sizeof(RAWINPUTDEVICELIST)) ==  -1) 
+        { 
+            LOG_ERROR("malloc GetRawInputDeviceList failed");
+            return false;
+        }
+
+        const InputManager* inputMgr = g_ClientGlobalContext.GetInputManager();
+        for (UINT index = 0; index < deviceNum; ++index)
+        {
+            if ((rawDevices + index)->dwType == RIM_TYPEKEYBOARD)
+            {
+                inputMgr->CreateDevice<InputDeviceKeyboardWin>();
+            }
+        }
+
+        free(rawDevices);
+        return true;
+    }
+
     void WinApplication::Update(float dt)
     {
         MSG msg;

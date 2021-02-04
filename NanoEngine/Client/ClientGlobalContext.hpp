@@ -3,6 +3,7 @@
 
 namespace Nano
 {
+    class InputManager;
     class IApplication;
     class GraphicsManager;
 
@@ -15,12 +16,14 @@ namespace Nano
         void Close();
         void Update(float dt);
 
+        const InputManager* GetInputManager() const { return m_InputManager; }
         const IApplication* GetApplication() const { return m_Application; }
         const GraphicsManager* GetGraphicsManager() const { return m_GfxManager; }
 
     private:
-        IApplication* m_Application;
-        GraphicsManager* m_GfxManager;
+        InputManager* m_InputManager{ nullptr };
+        IApplication* m_Application{ nullptr };
+        GraphicsManager* m_GfxManager{ nullptr };
     };
 
     extern ClientGlobalContext g_ClientGlobalContext;

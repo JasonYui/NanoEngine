@@ -21,12 +21,12 @@ namespace Nano
         void Update(float dt) override;
 
         template<typename T>
-        DeviceID CreateDevice();    //thread unsafe
+        DeviceID CreateDevice() const;    //thread unsafe
 
         void DeleteDevice(DeviceID id);
 
         bool GetBoolKeyDown(Key key);
-        bool GetBoolKeyRelease() {};
+        bool GetBoolKeyRelease(Key key);
 
     private:
         struct Change
@@ -40,10 +40,21 @@ namespace Nano
         };
 
     private:
-        Map<DeviceID, InputDevice*> m_DeviceMap;
-        DeviceID m_NextDeviceID{0};
+        mutable Map<DeviceID, InputDevice*> m_DeviceMap;
+        mutable uint16_t m_NextDeviceIndex{ 0 };
         Queue<Change> m_CurrentInputQueue;
 
         SharedPtr<InputScheme> m_InputScheme;
     };
+
+    template<typename T>
+    DeviceID InputManager::CreateDevice() const
+    {
+        T* device = new T();
+        InputDeviceType type = device->GetDeviceType();
+        DeviceID id = (static_cast<uint32_t>(type) << 24) + m_NextDeviceIndex;
+        m_DeviceMap[id] = device;
+        m_NextDeviceIndex++;
+        return id;
+    }
 }
