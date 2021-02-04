@@ -15,3 +15,9 @@
 #ifndef ALIGN
 #define ALIGN(x, a) (((x) + ((a) - 1)) & ~((a) - 1))
 #endif
+
+#if defined(_DEBUG) || defined(DEBUG)
+#ifndef ENGINE_DEBUG
+#define ENGINE_DEBUG
+#endif
+#endif
