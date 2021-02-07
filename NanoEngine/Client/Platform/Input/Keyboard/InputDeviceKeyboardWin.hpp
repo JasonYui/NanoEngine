@@ -1,24 +1,24 @@
 #pragma once
 
+#include <windows.h>
+#include <winuser.h>
+
 #include "Common/Type/MapWrapper.hpp"
+
 #include "Client/Input/InputDeviceKeyboard.hpp"
 #include "Client/Input/InputDefine.hpp"
 #include "Client/Input/InputEnum.hpp"
-#include <winuser.h>
 
 namespace Nano
 {
-    HashMap<uint32_t, Key> g_KeyMapping = {
-            {VK_ESCAPE, Key::_KeyEscape},
-            {VK_F1, Key::_KeyF1}
-    };
-
     class InputDeviceKeyboardWin : public InputDeviceKeyboard
     {
     public:
+        InputDeviceKeyboardWin();
+
         void HandleMessage(const MSG& msg);
 
-
     private:
+        static const HashMap<uint32_t, InputKey> s_KeyMapping;
     };
 }

@@ -12,12 +12,17 @@ namespace Nano
         }
     }
 
+    const InputDevice* InputManager::GetDevice(DeviceID id)
+    {
+        return m_DeviceMap[id];
+    }
+
     void InputManager::DeleteDevice(DeviceID id)
     {
         m_DeviceMap.erase(id);
     }
 
-    bool InputManager::GetBoolKeyDown(Key key)
+    bool InputManager::GetBoolKeyDown(InputKey key)
     {
         for (auto& iter : m_DeviceMap)
         {
@@ -27,7 +32,7 @@ namespace Nano
         return false;
     }
 
-    bool InputManager::GetBoolKeyRelease(Key key)
+    bool InputManager::GetBoolKeyRelease(InputKey key)
     {
         for (auto& iter : m_DeviceMap)
         {

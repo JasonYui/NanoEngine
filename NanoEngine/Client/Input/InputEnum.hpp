@@ -38,7 +38,7 @@ namespace Nano
         _MouseButtonCount
     };
 
-    enum class Key : uint32_t
+    enum class InputKey : uint32_t
     {
         _MouseButton0 = (static_cast<uint32_t>(InputDeviceType::_Mouse) << 24) + 0,
         _MouseButtonLeft = _MouseButton0,

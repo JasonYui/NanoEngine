@@ -1,8 +1,28 @@
 #include "InputDeviceKeyboardWin.hpp"
+
+#include <functional>
+
 #include "Common/Fwd.hpp"
+
+#include "Client/ClientGlobalContext.hpp"
+#include "Client/Platform/Application/Win/WinApplication.hpp"
 
 namespace Nano
 {
+    const HashMap<uint32_t, InputKey> InputDeviceKeyboardWin::s_KeyMapping = {
+        {VK_ESCAPE, InputKey::_KeyEscape},
+        { VK_F1, InputKey::_KeyF1 }
+    };
+
+    InputDeviceKeyboardWin::InputDeviceKeyboardWin()
+    {
+        const WinApplication* app = static_cast<const WinApplication*>(g_ClientGlobalContext.GetApplication());
+        if (app)
+        {
+            app->SetInputMessageHandler(std::bind(&InputDeviceKeyboardWin::HandleMessage, this, std::placeholders::_1));
+        }
+    }
+
     void InputDeviceKeyboardWin::HandleMessage(const MSG& msg)
     {
         if (msg.message != WM_INPUT)
@@ -10,8 +30,14 @@ namespace Nano
             return;
         }
 
-        uint32_t dwSize = 40;
-        static ubyte lpb[40];
+        uint32_t dwSize = 0;
+        GetRawInputData((HRAWINPUT)msg.lParam, RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
+
+        LPBYTE lpb = new BYTE[dwSize];
+        if (lpb == nullptr)
+        {
+            return;
+        }
         
         GetRawInputData((HRAWINPUT)msg.lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
         RAWINPUT* raw = (RAWINPUT*)lpb;
@@ -42,9 +68,9 @@ namespace Nano
                     vkey = VK_LMENU;
             }
 
-            if (g_KeyMapping.count(vkey))
+            if (s_KeyMapping.count(vkey))
             {
-                const Key key = g_KeyMapping[vkey];
+                const InputKey key = s_KeyMapping.at(static_cast<uint32_t>(vkey));
 #ifdef ENGINE_DEBUG
                 LOG_INFO("{0:d} mapped to: {1:d}", vkey, static_cast<uint32_t>(key));
 #endif

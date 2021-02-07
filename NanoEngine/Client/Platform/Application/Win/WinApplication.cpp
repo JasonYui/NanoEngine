@@ -8,7 +8,7 @@ namespace Nano
 {
     bool WinApplication::Init()
     {
-        UINT deviceNum = 0;
+        uint32_t deviceNum = 0;
         if (GetRawInputDeviceList(nullptr, &deviceNum, sizeof(RAWINPUTDEVICELIST)) != 0)
         {
             LOG_ERROR("call GetRawInputDeviceList failed");
@@ -24,20 +24,42 @@ namespace Nano
 
         if (GetRawInputDeviceList(rawDevices, &deviceNum, sizeof(RAWINPUTDEVICELIST)) ==  -1) 
         { 
-            LOG_ERROR("malloc GetRawInputDeviceList failed");
+            LOG_ERROR("call GetRawInputDeviceList failed");
             return false;
         }
 
         const InputManager* inputMgr = g_ClientGlobalContext.GetInputManager();
-        for (UINT index = 0; index < deviceNum; ++index)
+        
+        bool findKeyboard = false;
+        bool findMouse = false;
+        for (uint32_t index = 0; index < deviceNum; ++index)
         {
             if ((rawDevices + index)->dwType == RIM_TYPEKEYBOARD)
             {
-                inputMgr->CreateDevice<InputDeviceKeyboardWin>();
+                findKeyboard = true;
             }
         }
 
         free(rawDevices);
+
+        uint32_t availableDeviceCOunt = static_cast<uint32_t>(findKeyboard) + static_cast<uint32_t>(findMouse);
+        PCRAWINPUTDEVICE rawinputDevices = new RAWINPUTDEVICE[availableDeviceCOunt]();
+
+        if (findKeyboard)
+        {
+            inputMgr->CreateDevice<InputDeviceKeyboardWin>();
+
+            RAWINPUTDEVICE rid;
+            rid.usUsagePage = 0x01;
+            rid.usUsage = 0x06;
+            rid.dwFlags = RIDEV_EXINPUTSINK;
+            rid.hwndTarget = m_HWnd;
+            if (RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
+            {
+                LOG_WARNING("register keyboard raw input failed");
+            }
+        }
+
         return true;
     }
 
@@ -162,6 +184,14 @@ namespace Nano
         break;
         case WM_INPUT:
         {
+            MSG msg;
+            msg.lParam = lParam;
+            msg.message = WM_INPUT;
+            if (self->m_InputMsgHandler != nullptr)
+            {
+                self->m_InputMsgHandler(msg);
+            }
+
         }break;
         default:
             result = DefWindowProc(hWnd, message, wParam, lParam);

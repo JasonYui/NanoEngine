@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <windowsx.h>
+#include <functional>
 #include "Client/Application/Application.hpp"
 
 namespace Nano
@@ -18,6 +19,7 @@ namespace Nano
 
         //platform only api
         HWND GetHWND() const { return m_HWnd; }
+        void SetInputMessageHandler(std::function<void(MSG)> handler) const { m_InputMsgHandler = handler; }
     private:
         static LRESULT CALLBACK WindowProcess(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -26,5 +28,6 @@ namespace Nano
         HDC m_HDC{ nullptr };
         bool m_IsQuit{ false };
         WindowDefination m_WindowDef;
+        mutable std::function<void(MSG)> m_InputMsgHandler;
     };
 }

@@ -11,13 +11,13 @@ namespace Nano
 
         virtual InputDeviceType inline GetDeviceType() const = 0;
 
-        virtual bool GetBoolKeyDown(Key key) = 0;
+        virtual bool GetBoolKeyDown(InputKey key) = 0;
 
-        virtual bool GetBoolKeyRelease(Key key) = 0;
+        virtual bool GetBoolKeyRelease(InputKey key) = 0;
 
-        virtual bool GetBoolKeyClick(Key key) = 0;
+        virtual bool GetBoolKeyClick(InputKey key) = 0;
 
-        virtual bool GetBoolKeyPress(Key key, float holdTime) = 0;
+        virtual bool GetBoolKeyPress(InputKey key, float holdTime) = 0;
 
     private:
         InputState* m_State;

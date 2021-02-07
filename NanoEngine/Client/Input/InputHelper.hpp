@@ -5,8 +5,13 @@
 
 namespace Nano
 {
-    inline InputDeviceType GetDeviceType(Key key)
+    inline InputDeviceType GetDeviceType(InputKey key)
     {
         return static_cast<InputDeviceType>(static_cast<uint32_t>(key) >> 24);
+    }
+
+    inline InputDeviceType GetDeviceType(DeviceID id)
+    {
+        return static_cast<InputDeviceType>(id >> 24);
     }
 }

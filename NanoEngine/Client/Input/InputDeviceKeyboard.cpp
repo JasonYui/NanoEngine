@@ -14,7 +14,7 @@ namespace Nano
         }
     }
 
-    bool InputDeviceKeyboard::GetBoolKeyDown(Key key)
+    bool InputDeviceKeyboard::GetBoolKeyDown(InputKey key)
     {
         auto iter = m_KeyInputStateMap.find(key);
         if (iter != m_KeyInputStateMap.end())
@@ -24,7 +24,7 @@ namespace Nano
         return false;
     }
     
-    bool InputDeviceKeyboard::GetBoolKeyRelease(Key key)
+    bool InputDeviceKeyboard::GetBoolKeyRelease(InputKey key)
     {
         auto iter = m_KeyInputStateMap.find(key);
         if (iter != m_KeyInputStateMap.end())
@@ -34,7 +34,7 @@ namespace Nano
         return false;
     }
 
-    bool InputDeviceKeyboard::GetBoolKeyClick(Key key)
+    bool InputDeviceKeyboard::GetBoolKeyClick(InputKey key)
     {
         auto iter = m_KeyInputStateMap.find(key);
         if (iter != m_KeyInputStateMap.end())
@@ -44,7 +44,7 @@ namespace Nano
         return false;
     }
 
-    bool InputDeviceKeyboard::GetBoolKeyPress(Key key, float holdTime)
+    bool InputDeviceKeyboard::GetBoolKeyPress(InputKey key, float holdTime)
     {
         auto iter = m_KeyInputStateMap.find(key);
         if (iter != m_KeyInputStateMap.end())
@@ -54,7 +54,7 @@ namespace Nano
         return false;
     }
 
-    void InputDeviceKeyboard::HandleButton(Key key, bool keyDown)
+    void InputDeviceKeyboard::HandleButton(InputKey key, bool keyDown)
     {
         auto iter = m_KeyInputStateMap.find(key);
         if (iter != m_KeyInputStateMap.end())

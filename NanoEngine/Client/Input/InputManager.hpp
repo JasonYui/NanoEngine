@@ -23,10 +23,12 @@ namespace Nano
         template<typename T>
         DeviceID CreateDevice() const;    //thread unsafe
 
+        const InputDevice* GetDevice(DeviceID id);
+
         void DeleteDevice(DeviceID id);
 
-        bool GetBoolKeyDown(Key key);
-        bool GetBoolKeyRelease(Key key);
+        bool GetBoolKeyDown(InputKey key);
+        bool GetBoolKeyRelease(InputKey key);
 
     private:
         struct Change
