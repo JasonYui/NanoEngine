@@ -3,6 +3,7 @@
 #include "wrl/client.h"
 #include <dxgi1_6.h>
 #include <d3d12.h>
+#include <Common/Fwd.hpp>
 
 namespace Nano
 {

@@ -98,7 +98,7 @@ namespace Nano
         qualityLevel.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
         qualityLevel.NumQualityLevels = 0;
         m_Device->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &qualityLevel, sizeof(qualityLevel));
-        assert(qualityLevel.NumQualityLevels > 0);
+        ASSERT(qualityLevel.NumQualityLevels > 0);
         m_4xMSAAQuality = qualityLevel.NumQualityLevels;
         return true;
     }
