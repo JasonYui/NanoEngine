@@ -1,5 +1,6 @@
 #include "Allocator.hpp"
-#include "NanoEngine/Common/Math/Math.hpp"
+#include "Common/Fwd.hpp"
+#include "Common/Math/Math.hpp"
 
 using namespace Nano;
 
@@ -26,8 +27,8 @@ namespace Nano
         // this magic only works when alignment is 2^n, which should general be the case
         // because most CPU/GPU also requires the aligment be in 2^n
         // but still we use a assert to guarantee it
-#if defined(_DEBUG)
-        ASSERT(alignment > 0 && ((alignment & (alignment - 1))) == 0);
+#ifdef ENGINE_DEBUG
+        ASSERT(alignment > 0 && (alignment & (alignment - 1)) == 0);
 #endif
         m_BlockSize = Math::Align(minSize, alignment);
 
@@ -45,7 +46,7 @@ namespace Nano
             m_BlockCount += m_BlocksPerPage;
             m_FreeBlockCount += m_BlocksPerPage;
 
-#if defined(_DEBUG)
+#ifdef ENGINE_DEBUG
             FillFreePage(newPage);
 #endif
 

@@ -9,7 +9,7 @@
 
 #undef ASSERT
 #define ASSERT(expression) {\
-    LOG_CRITICAL("assert({0})", #expression);\
+    if (!(expression)) { LOG_CRITICAL("assert({0})", #expression); }\
     assert(expression);};
 
 #ifndef ALIGN
