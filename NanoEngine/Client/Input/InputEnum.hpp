@@ -3,11 +3,21 @@
 
 namespace Nano
 {
-    enum class BaseInputType
+    enum class RawInputType
     {
         _None,
         _Down,
-        _Release
+        _Release,
+        _Move
+    };
+
+    enum class CustomInputType
+    {
+        _Down,
+        _Release,
+        _Click,
+        _Press,
+        _Move
     };
 
     enum class InputDeviceType : uint8_t
@@ -17,29 +27,9 @@ namespace Nano
         _Gamepad
     };
 
-    enum class MouseButton
-    {
-        _MouseButton0 = 0,
-        _MouseButtonLeft = _MouseButton0,
-        _MouseButton1,
-        _MouseButton_Middle = _MouseButton1,
-        _MouseButton2,
-        _MouseButtonRight = _MouseButton2,
-        _MouseButton3,
-        _MouseButtonWheelUp = _MouseButton3,
-        _MouseButton4,
-        _MouseButtonWheelDown = _MouseButton4,
-        _MouseButton5,
-        _MouseButton6,
-        _MouseButton7,
-        _MouseButton8,
-        _MouseAxisX,
-        _MouseAxisY,
-        _MouseButtonCount
-    };
-
     enum class InputKey : uint32_t
     {
+        _None = 0,
         _MouseButton0 = (static_cast<uint32_t>(InputDeviceType::_Mouse) << 24) + 0,
         _MouseButtonLeft = _MouseButton0,
         _MouseButton1,
@@ -56,7 +46,8 @@ namespace Nano
         _MouseButton8,
         _MouseAxisX,
         _MouseAxisY,
-        _MouseButtonCount = _MouseAxisY - _MouseButton0 + 1,
+        _MouseAxisXY,
+        _MouseButtonCount = _MouseAxisXY - _MouseButton0 + 1,
 
         _KeyEscape = (static_cast<uint32_t>(InputDeviceType::_Keyboard) << 24) + 0,
         _KeyF1,

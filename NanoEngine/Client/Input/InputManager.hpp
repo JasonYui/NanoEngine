@@ -15,47 +15,40 @@ namespace Nano
     class InputManager : IRuntimeModule
     {
     public:
-        virtual ~InputManager() {};
-        virtual bool Init() { return true; };
-        virtual void Close() {};
-        void Update(float dt) override;
+        ~InputManager() {};
+        bool Init() final { return true; };
+        void Close() final;
+        void Update(float dt) final;
 
         template<typename T>
-        DeviceID CreateDevice() const;    //thread unsafe
+        DeviceId CreateDevice() const;    //thread unsafe
 
-        const InputDevice* GetDevice(DeviceID id);
-
-        void DeleteDevice(DeviceID id);
+        void DeleteDevice(DeviceId id);
 
         bool GetBoolKeyDown(InputKey key);
         bool GetBoolKeyRelease(InputKey key);
+        bool GetBoolKeyClick(InputKey key);
+        bool GetBoolKeyPress(InputKey key, float holdTime);
+        Vector2f GetAxisKey(InputKey key);
+
+        void SetInputScheme(SharedPtr<InputScheme> scheme) const { m_InputScheme = scheme; }
 
     private:
-        struct Change
-        {
-            InputDevice* device;
-            union
-            {
-                bool b;
-                float f;
-            };
-        };
-
-    private:
-        mutable Map<DeviceID, InputDevice*> m_DeviceMap;
+        mutable Map<DeviceId, InputDevice*> m_DeviceMap;
         mutable uint16_t m_NextDeviceIndex{ 0 };
-        Queue<Change> m_CurrentInputQueue;
+        mutable SharedPtr<InputScheme> m_InputScheme;
 
-        SharedPtr<InputScheme> m_InputScheme;
+        Vector<StringID> m_InputEvents;
+        HashMap<StringID, Vector2f> m_AxisEventsMap;
     };
 
     template<typename T>
-    DeviceID InputManager::CreateDevice() const
+    DeviceId InputManager::CreateDevice() const
     {
-        T* device = new T();
+        InputDevice* device = new T();
         InputDeviceType type = device->GetDeviceType();
-        DeviceID id = (static_cast<uint32_t>(type) << 24) + m_NextDeviceIndex;
-        m_DeviceMap[id] = device;
+        DeviceId id = (static_cast<uint32_t>(type) << 24) + m_NextDeviceIndex;
+        m_DeviceMap.emplace(id, device);
         m_NextDeviceIndex++;
         return id;
     }

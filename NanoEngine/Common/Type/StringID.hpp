@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Common/Fwd.hpp"
 #include "Common/Type/MapWrapper.hpp"
 #include "Common/Type/StringWrapper.hpp"
@@ -26,19 +27,31 @@ namespace Nano
     class StringID
     {
     public:
+        static const StringID Empty() { return StringID(0); }
+    public:
         StringID(size_t hash) : m_Hash(hash) {};
         StringID(String str) : m_Hash(StringIDHelper::GetStrHash(str)) {}
         
-        size_t GetHash() { return m_Hash; }
+        size_t GetHash() const { return m_Hash; }
 
         StringID& operator=(const StringID& rhs) { m_Hash = rhs.m_Hash; return *this; }
         bool operator>(const StringID& rhs) { return m_Hash > rhs.m_Hash; }
         bool operator<(const StringID& rhs) { return m_Hash < rhs.m_Hash; }
         bool operator<=(const StringID& rhs) { return m_Hash <= rhs.m_Hash; }
         bool operator>=(const StringID& rhs) { return m_Hash >= rhs.m_Hash; }
-        bool operator==(const StringID& rhs) { return m_Hash == rhs.m_Hash; }
 
     private:
         size_t m_Hash{ 0 };
     };
+
+    inline bool operator==(const StringID& lhs, const StringID& rhs) { return lhs.GetHash() == rhs.GetHash(); }
 }
+
+template <>
+struct std::hash<Nano::StringID>
+{
+    std::size_t operator()(const Nano::StringID& strId) const
+    {
+        return strId.GetHash();
+    }
+};

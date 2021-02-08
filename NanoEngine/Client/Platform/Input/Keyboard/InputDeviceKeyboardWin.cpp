@@ -10,8 +10,14 @@
 namespace Nano
 {
     const HashMap<uint32_t, InputKey> InputDeviceKeyboardWin::s_KeyMapping = {
-        {VK_ESCAPE, InputKey::_KeyEscape},
-        { VK_F1, InputKey::_KeyF1 }
+        { VK_ESCAPE, InputKey::_KeyEscape },
+        { VK_F1, InputKey::_KeyF1 },
+        { 'W', InputKey::_KeyW },
+        { 'A', InputKey::_KeyA },
+        { 'S', InputKey::_KeyS },
+        { 'D', InputKey::_KeyD },
+        { VK_LCONTROL, InputKey::_KeyCtrlL },
+        { VK_LSHIFT, InputKey::_KeyShiftL }
     };
 
     InputDeviceKeyboardWin::InputDeviceKeyboardWin()
@@ -19,7 +25,7 @@ namespace Nano
         const WinApplication* app = static_cast<const WinApplication*>(g_ClientGlobalContext.GetApplication());
         if (app)
         {
-            app->SetInputMessageHandler(std::bind(&InputDeviceKeyboardWin::HandleMessage, this, std::placeholders::_1));
+            app->SetKeyboardMsgHandler(std::bind(&InputDeviceKeyboardWin::HandleMessage, this, std::placeholders::_1));
         }
     }
 

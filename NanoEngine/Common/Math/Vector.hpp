@@ -6,9 +6,13 @@ namespace Nano
     template<typename T>
     struct Vector2
     {
+        Vector2() {};
         explicit Vector2(T _x, T _y) : x(_x), y(_y) {}
 
+        static Vector2 Zero() { return Vector2(); }
+
         Vector2 operator* (T scale) const;
+        Vector2 operator+ (const Vector2& rhs) const;
 
         T Dot(const Vector2& rhs);
         T Cross(const Vector2& rhs);
@@ -16,6 +20,9 @@ namespace Nano
         T x;
         T y;
     };
+
+    template<typename T>
+    bool operator ==(const Vector2<T>& lhs, const Vector2<T>& rhs) { return lhs.x == rhs.x && lhs.y == rhs.y; }
 
     using Vector2i = Vector2<uint32_t>;
     using Vector2f = Vector2<float>;

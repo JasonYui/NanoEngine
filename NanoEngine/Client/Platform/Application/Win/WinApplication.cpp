@@ -3,63 +3,12 @@
 #include "Client/ClientGlobalContext.hpp"
 #include "Client/Input/InputManager.hpp"
 #include "Client/Platform/Input/Keyboard/InputDeviceKeyboardWin.hpp"
+#include "Client/Platform/Input/Mouse/InputDeviceMouseWin.hpp"
 
 namespace Nano
 {
     bool WinApplication::Init()
     {
-        uint32_t deviceNum = 0;
-        if (GetRawInputDeviceList(nullptr, &deviceNum, sizeof(RAWINPUTDEVICELIST)) != 0)
-        {
-            LOG_ERROR("call GetRawInputDeviceList failed");
-            return false;
-        }
-
-        PRAWINPUTDEVICELIST rawDevices = (PRAWINPUTDEVICELIST)malloc(sizeof(RAWINPUTDEVICELIST) * deviceNum);
-        if (rawDevices == nullptr) 
-        {
-            LOG_ERROR("malloc PRAWINPUTDEVICELIST failed");
-            return false;
-        }
-
-        if (GetRawInputDeviceList(rawDevices, &deviceNum, sizeof(RAWINPUTDEVICELIST)) ==  -1) 
-        { 
-            LOG_ERROR("call GetRawInputDeviceList failed");
-            return false;
-        }
-
-        const InputManager* inputMgr = g_ClientGlobalContext.GetInputManager();
-        
-        bool findKeyboard = false;
-        bool findMouse = false;
-        for (uint32_t index = 0; index < deviceNum; ++index)
-        {
-            if ((rawDevices + index)->dwType == RIM_TYPEKEYBOARD)
-            {
-                findKeyboard = true;
-            }
-        }
-
-        free(rawDevices);
-
-        uint32_t availableDeviceCOunt = static_cast<uint32_t>(findKeyboard) + static_cast<uint32_t>(findMouse);
-        PCRAWINPUTDEVICE rawinputDevices = new RAWINPUTDEVICE[availableDeviceCOunt]();
-
-        if (findKeyboard)
-        {
-            inputMgr->CreateDevice<InputDeviceKeyboardWin>();
-
-            RAWINPUTDEVICE rid;
-            rid.usUsagePage = 0x01;
-            rid.usUsage = 0x06;
-            rid.dwFlags = RIDEV_EXINPUTSINK;
-            rid.hwndTarget = m_HWnd;
-            if (RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
-            {
-                LOG_WARNING("register keyboard raw input failed");
-            }
-        }
-
         return true;
     }
 
@@ -122,24 +71,9 @@ namespace Nano
         m_HDC = GetDC(m_HWnd);
 
         // display the window on the screen
-        ShowWindow(m_HWnd, SW_SHOW);
-        UpdateWindow(m_HWnd);
-
-        RAWINPUTDEVICE rawInputDevice;
-
-        //The HID standard for mouse
-        const uint16_t standardMouse = 0x02;
-
-        rawInputDevice.usUsagePage = 0x01;
-        rawInputDevice.usUsage = standardMouse;
-        rawInputDevice.dwFlags = 0;
-
-        // Process input for just the window that requested it.  NOTE: If we pass NULL here events are routed to the window with keyboard focus
-        // which is not always known at the HWND level with Slate
-        rawInputDevice.hwndTarget = m_HWnd;
-
-        // Register the raw input device
-        ::RegisterRawInputDevices(&rawInputDevice, 1, sizeof(RAWINPUTDEVICE));
+        ::ShowWindow(m_HWnd, SW_SHOW);
+        ::UpdateWindow(m_HWnd);
+        CreateRawInputDevice();
     }
 
     void WinApplication::GetWindowSize(OUT uint32_t& width, OUT uint32_t& height) const
@@ -187,9 +121,14 @@ namespace Nano
             MSG msg;
             msg.lParam = lParam;
             msg.message = WM_INPUT;
-            if (self->m_InputMsgHandler != nullptr)
+            if (self->m_KeyboardMsgHandler != nullptr)
             {
-                self->m_InputMsgHandler(msg);
+                self->m_KeyboardMsgHandler(msg);
+            }
+
+            if (self->m_MouseMsgHandler != nullptr)
+            {
+                self->m_MouseMsgHandler(msg);
             }
 
         }break;
@@ -198,5 +137,73 @@ namespace Nano
         }
 
         return result;
+    }
+    
+    void WinApplication::CreateRawInputDevice()
+    {
+        uint32_t deviceNum = 0;
+        if (GetRawInputDeviceList(nullptr, &deviceNum, sizeof(RAWINPUTDEVICELIST)) != 0)
+        {
+            LOG_ERROR("call GetRawInputDeviceList failed");
+            return;
+        }
+
+        PRAWINPUTDEVICELIST rawDevices = (PRAWINPUTDEVICELIST)malloc(sizeof(RAWINPUTDEVICELIST) * deviceNum);
+        if (rawDevices == nullptr)
+        {
+            LOG_ERROR("malloc PRAWINPUTDEVICELIST failed");
+            return;
+        }
+
+        if (GetRawInputDeviceList(rawDevices, &deviceNum, sizeof(RAWINPUTDEVICELIST)) == -1)
+        {
+            LOG_ERROR("call GetRawInputDeviceList failed");
+            return;
+        }
+
+        const InputManager* inputMgr = g_ClientGlobalContext.GetInputManager();
+
+        bool findKeyboard = false;
+        bool findMouse = false;
+        for (uint32_t index = 0; index < deviceNum; ++index)
+        {
+            if ((rawDevices + index)->dwType == RIM_TYPEKEYBOARD)
+                findKeyboard = true;
+            else if ((rawDevices + index)->dwType == RIM_TYPEMOUSE)
+                findMouse = true;
+        }
+
+        free(rawDevices);
+
+        uint32_t availableDeviceCOunt = static_cast<uint32_t>(findKeyboard) + static_cast<uint32_t>(findMouse);
+        RAWINPUTDEVICE* rawinputDevices = new RAWINPUTDEVICE[availableDeviceCOunt]();
+
+        uint32_t index = 0;
+        if (findKeyboard)
+        {
+            inputMgr->CreateDevice<InputDeviceKeyboardWin>();
+
+            (rawinputDevices + index)->usUsagePage = 0x01;
+            (rawinputDevices + index)->usUsage = 0x06;
+            (rawinputDevices + index)->dwFlags = RIDEV_INPUTSINK;
+            (rawinputDevices + index)->hwndTarget = m_HWnd;
+            index++;
+        }
+
+        if (findMouse)
+        {
+            inputMgr->CreateDevice<InputDeviceMouseWin>();
+
+            (rawinputDevices + index)->usUsagePage = 0x01;
+            (rawinputDevices + index)->usUsage = 0x02;
+            (rawinputDevices + index)->dwFlags = 0;
+            (rawinputDevices + index)->hwndTarget = m_HWnd;
+            index++;
+        }
+
+        if (!RegisterRawInputDevices(rawinputDevices, index, sizeof(RAWINPUTDEVICE)))
+        {
+            LOG_WARNING("register keyboard raw input failed");
+        }
     }
 }

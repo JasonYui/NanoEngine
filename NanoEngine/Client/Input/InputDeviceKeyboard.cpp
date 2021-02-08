@@ -1,5 +1,6 @@
 #include "InputDeviceKeyboard.hpp"
 #include "InputEnum.hpp"
+#include "InputHelper.hpp"
 
 namespace Nano
 {
@@ -7,7 +8,7 @@ namespace Nano
     {
         for (auto& iter : m_KeyInputStateMap)
         {
-            if (iter.second.prevInputType == BaseInputType::_Down && iter.second.inputType == BaseInputType::_Down)
+            if (iter.second.prevInputType == RawInputType::_Down && iter.second.inputType == RawInputType::_Down)
             {
                 iter.second.holdTime += dt;
             }
@@ -16,51 +17,26 @@ namespace Nano
 
     bool InputDeviceKeyboard::GetBoolKeyDown(InputKey key)
     {
-        auto iter = m_KeyInputStateMap.find(key);
-        if (iter != m_KeyInputStateMap.end())
-        {
-            return iter->second.inputType == BaseInputType::_Down;
-        }
-        return false;
+        return InputHelper::GetBoolKeyDown(m_KeyInputStateMap, key);
     }
     
     bool InputDeviceKeyboard::GetBoolKeyRelease(InputKey key)
     {
-        auto iter = m_KeyInputStateMap.find(key);
-        if (iter != m_KeyInputStateMap.end())
-        {
-            return iter->second.inputType == BaseInputType::_Release;
-        }
-        return false;
+        return InputHelper::GetBoolKeyRelease(m_KeyInputStateMap, key);
     }
 
     bool InputDeviceKeyboard::GetBoolKeyClick(InputKey key)
     {
-        auto iter = m_KeyInputStateMap.find(key);
-        if (iter != m_KeyInputStateMap.end())
-        {
-            return iter->second.inputType == BaseInputType::_Down && iter->second.prevInputType == BaseInputType::_Down;
-        }
-        return false;
+        return InputHelper::GetBoolKeyClick(m_KeyInputStateMap, key);
     }
 
     bool InputDeviceKeyboard::GetBoolKeyPress(InputKey key, float holdTime)
     {
-        auto iter = m_KeyInputStateMap.find(key);
-        if (iter != m_KeyInputStateMap.end())
-        {
-            return iter->second.inputType == BaseInputType::_Down && iter->second.holdTime >= holdTime;
-        }
-        return false;
+        return InputHelper::GetBoolKeyPress(m_KeyInputStateMap, key, holdTime);
     }
 
     void InputDeviceKeyboard::HandleButton(InputKey key, bool keyDown)
     {
-        auto iter = m_KeyInputStateMap.find(key);
-        if (iter != m_KeyInputStateMap.end())
-        {
-            iter->second.prevInputType = iter->second.inputType;
-            iter->second.inputType = keyDown ? BaseInputType::_Down : BaseInputType::_Release;
-        }
+        InputHelper::HandleButton(m_KeyInputStateMap, key, keyDown);
     }
 }

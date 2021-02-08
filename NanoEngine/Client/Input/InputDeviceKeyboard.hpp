@@ -1,4 +1,5 @@
 #pragma once
+
 #include "InputDevice.hpp"
 #include "Common/Type/MapWrapper.hpp"
 #include "InputState.hpp"
@@ -12,13 +13,15 @@ namespace Nano
 
         InputDeviceType inline GetDeviceType() const final { return InputDeviceType::_Keyboard; };
 
-        bool GetBoolKeyDown(InputKey key) override;
+        bool GetBoolKeyDown(InputKey key) final;
 
-        bool GetBoolKeyRelease(InputKey key) override;
+        bool GetBoolKeyRelease(InputKey key) final;
 
-        bool GetBoolKeyClick(InputKey key) override;
+        bool GetBoolKeyClick(InputKey key) final;
 
-        bool GetBoolKeyPress(InputKey key, float holdTime);
+        bool GetBoolKeyPress(InputKey key, float holdTime) final;
+
+        bool GetAxisKey(InputKey key, OUT Vector2f& axis) final { return false; }
 
     protected:
         void HandleButton(InputKey key, bool keyDown);
