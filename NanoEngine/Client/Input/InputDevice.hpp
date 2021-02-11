@@ -29,9 +29,5 @@ namespace Nano
         virtual bool GetBoolKeyPress(InputKey key, float holdTime) = 0;
 
         virtual bool GetAxisKey(InputKey key, OUT Vector2f& axis) = 0;
-
-    protected:
-        InputState* m_State;
-        InputState* m_PrevState;
     };
 }

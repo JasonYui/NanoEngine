@@ -1,3 +1,5 @@
+#include "Common/Tick/TickManager.hpp"
+
 #include "ClientGlobalContext.hpp"
 #include "Client/Input/InputManager.hpp"
 
@@ -12,6 +14,7 @@ namespace Nano
 
     ClientGlobalContext::ClientGlobalContext()
     {
+        m_TickManager = new TickManager();
         m_InputManager = new InputManager();
 #ifdef _WINDOWS
         m_Application = new WinApplication();
@@ -21,11 +24,27 @@ namespace Nano
 
     ClientGlobalContext::~ClientGlobalContext()
     {
-        Close();
+        delete m_GfxManager;
+        m_GfxManager = nullptr;
+
+        delete m_Application;
+        m_Application = nullptr;
+
+        delete m_InputManager;
+        m_InputManager = nullptr;
+
+        delete m_TickManager;
+        m_TickManager = nullptr;
     }
 
-    bool ClientGlobalContext::Init(const WindowDefination& windowDef)
+    bool ClientGlobalContext::Init(const ClientDesc& desc)
     {
+        if (!m_TickManager->Init(desc.tickMode, desc.frameRate))
+        {
+            LOG_ERROR("meet error when init TickManager");
+            return false;
+        }
+
         if (!m_InputManager->Init())
         {
             LOG_ERROR("meet error when init InputManager");
@@ -38,7 +57,7 @@ namespace Nano
             return false;
         }
 
-        m_Application->CreateDisplayWindow(windowDef);
+        m_Application->CreateDisplayWindow(desc.windowDef);
 
         if (!m_GfxManager->Init())
         {
@@ -51,22 +70,20 @@ namespace Nano
     void ClientGlobalContext::Close()
     {
         m_GfxManager->Close();
-        delete m_GfxManager;
-        m_GfxManager = nullptr;
-
         m_Application->Close();
-        delete m_Application;
-        m_Application = nullptr;
-
         m_InputManager->Close();
-        delete m_InputManager;
-        m_InputManager = nullptr;
+        m_TickManager->Close();
     }
 
-    void ClientGlobalContext::Update(float dt)
+    void ClientGlobalContext::Update()
     {
+        float dt = 0.0f;
         m_Application->Update(dt);
+        if (!m_TickManager->TryGetDeltaTime(dt))
+            return;
+
         m_InputManager->Update(dt);
+        //LOG_INFO("delta time = {0:f}", dt);
     }
 }
 

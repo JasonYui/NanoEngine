@@ -1,6 +1,6 @@
 #include "WinApplication.hpp"
 #include "Common/Type/TypeDef.hpp"
-#include "Client/ClientGlobalContext.hpp"
+#include "Client/Main/ClientGlobalContext.hpp"
 #include "Client/Input/InputManager.hpp"
 #include "Client/Platform/Input/Keyboard/InputDeviceKeyboardWin.hpp"
 #include "Client/Platform/Input/Mouse/InputDeviceMouseWin.hpp"

@@ -2,7 +2,7 @@
 #pragma comment(lib, "d3d12.lib") 
 
 #include "D3DGraphicsManager.hpp"
-#include "Client/ClientGlobalContext.hpp"
+#include "Client/Main/ClientGlobalContext.hpp"
 #include "Client/Application/Application.hpp"
 #include "Client/Platform/Application/Win/WinApplication.hpp"
 #include <comdef.h>
