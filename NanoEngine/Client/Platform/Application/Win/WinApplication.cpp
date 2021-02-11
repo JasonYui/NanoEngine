@@ -1,6 +1,6 @@
 #include "WinApplication.hpp"
 #include "Common/Type/TypeDef.hpp"
-#include "Client/ClientGlobalContext.hpp"
+#include "Client/Main/ClientGlobalContext.hpp"
 #include "Client/Input/InputManager.hpp"
 #include "Client/Platform/Input/Keyboard/InputDeviceKeyboardWin.hpp"
 
@@ -42,8 +42,8 @@ namespace Nano
 
         free(rawDevices);
 
-        uint32_t availableDeviceCOunt = static_cast<uint32_t>(findKeyboard) + static_cast<uint32_t>(findMouse);
-        PCRAWINPUTDEVICE rawinputDevices = new RAWINPUTDEVICE[availableDeviceCOunt]();
+        uint32_t availableDeviceCount = static_cast<uint32_t>(findKeyboard) + static_cast<uint32_t>(findMouse);
+        PCRAWINPUTDEVICE rawinputDevices = new RAWINPUTDEVICE[availableDeviceCount]();
 
         if (findKeyboard)
         {

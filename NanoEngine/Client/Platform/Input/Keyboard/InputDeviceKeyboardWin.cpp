@@ -4,7 +4,7 @@
 
 #include "Common/Fwd.hpp"
 
-#include "Client/ClientGlobalContext.hpp"
+#include "Client/Main/ClientGlobalContext.hpp"
 #include "Client/Platform/Application/Win/WinApplication.hpp"
 
 namespace Nano

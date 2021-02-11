@@ -31,20 +31,8 @@ namespace Nano
         bool GetBoolKeyRelease(InputKey key);
 
     private:
-        struct Change
-        {
-            InputDevice* device;
-            union
-            {
-                bool b;
-                float f;
-            };
-        };
-
-    private:
         mutable Map<DeviceID, InputDevice*> m_DeviceMap;
         mutable uint16_t m_NextDeviceIndex{ 0 };
-        Queue<Change> m_CurrentInputQueue;
 
         SharedPtr<InputScheme> m_InputScheme;
     };

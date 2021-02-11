@@ -4,7 +4,7 @@
 
 namespace Nano
 {
-    class InputDevice
+    _interface_ InputDevice
     {
     public:
         virtual void Update(float dt) = 0;
@@ -18,9 +18,5 @@ namespace Nano
         virtual bool GetBoolKeyClick(InputKey key) = 0;
 
         virtual bool GetBoolKeyPress(InputKey key, float holdTime) = 0;
-
-    private:
-        InputState* m_State;
-        InputState* m_PrevState;
     };
 }
