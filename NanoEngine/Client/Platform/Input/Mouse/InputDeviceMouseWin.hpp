@@ -1,4 +1,7 @@
 #pragma once
+#include <windows.h>
+#include <winuser.h>
+
 #include "Client/Input/InputDeviceMouse.hpp"
 
 namespace Nano

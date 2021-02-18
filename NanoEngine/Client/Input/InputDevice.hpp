@@ -7,15 +7,6 @@ namespace Nano
     class InputDevice
     {
     public:
-        virtual ~InputDevice()
-        {
-            delete m_State;
-            m_State = nullptr;
-
-            delete m_PrevState;
-            m_PrevState = nullptr;
-        }
-
         virtual void Update(float dt) = 0;
 
         virtual InputDeviceType inline GetDeviceType() const = 0;

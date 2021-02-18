@@ -10,6 +10,7 @@ namespace Nano
     {
     public:
         WinApplication() = default;
+        ~WinApplication();
         bool Init();
         void Update(float dt) final;
 

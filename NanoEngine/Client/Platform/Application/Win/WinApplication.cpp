@@ -7,6 +7,11 @@
 
 namespace Nano
 {
+    WinApplication::~WinApplication()
+    {
+        ReleaseDC(m_HWnd, m_HDC);
+    }
+
     bool WinApplication::Init()
     {
         return true;

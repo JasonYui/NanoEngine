@@ -6,7 +6,7 @@ using namespace Nano;
 
 namespace Test
 {
-    TEST(AllocatorTest, Test_Vector)
+    TEST(MathTest, Test_Vector)
     {
         Vector3f vec3(1.0f, 2.0f, 3.0f);
         Vector3f newVec3 = vec3 * 2.0f;
@@ -14,7 +14,7 @@ namespace Test
         Vector3f result = vec3.Cross(newVec3);
     }
 
-    TEST(AllocatorTest, Test_Quaternion)
+    TEST(MathTest, Test_Quaternion)
     {
         Vector3f vec3(1.0f, 2.0f, 3.0f);
         Quaternionf q(vec3);

@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include "spdlog/spdlog.h"
+#include "Common/Type/CommonMarco.hpp"
 
 namespace Nano
 {
@@ -14,6 +15,16 @@ namespace Nano
     ss << "[" << __FUNCTION__ <<"] " << format;\
     spdlog::info(ss.str(), ## __VA_ARGS__);}
 #endif // !LOG_INFO
+
+#undef LOG_INFO_DEBUG
+#ifdef ENGINE_DEBUG
+#define LOG_INFO_DEBUG(format, ...){\
+    std::stringstream ss;\
+    ss << "[" << __FUNCTION__ <<"] " << format;\
+    spdlog::info(ss.str(), ## __VA_ARGS__);}
+#else
+    #define LOG_INFO_DEBUG(format, ...)
+#endif
 
 #ifndef LOG_WARNING
 #define LOG_WARNING(format, ...){\
@@ -36,4 +47,9 @@ namespace Nano
     spdlog::critical(ss.str(), ## __VA_ARGS__);\
     assert(false);}
 #endif // !LOG_CRITICAL
+
+#undef ASSERT
+#define ASSERT(expression) {\
+    if (!(expression)) { LOG_CRITICAL("assert({0})", #expression); }\
+    assert(expression);};
 }

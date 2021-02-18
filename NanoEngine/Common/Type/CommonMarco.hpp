@@ -1,16 +1,10 @@
 #pragma once
 #include <cassert>
-#include "Common/Log/Logger.hpp"
 
 #define RETURN(expression) {if (expression) {return;}}
 #define RETURN_FALSE(expression) {if (!(expression)) {return false;}}
 
 #define NULLPTR_RETURN(p) {if ((p) == nullptr) {return;}}
-
-#undef ASSERT
-#define ASSERT(expression) {\
-    if (!(expression)) { LOG_CRITICAL("assert({0})", #expression); }\
-    assert(expression);};
 
 #ifndef ALIGN
 #define ALIGN(x, a) (((x) + ((a) - 1)) & ~((a) - 1))

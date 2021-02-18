@@ -23,6 +23,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC_FILES})
 set(CONAN_PKGS
     spdlog/1.8.2
     nameof/0.10.0
+    mimalloc/1.6.7
 )
 
 conan_cmake_run(REQUIRES ${CONAN_PKGS}
