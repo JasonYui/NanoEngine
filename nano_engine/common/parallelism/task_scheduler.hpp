@@ -4,6 +4,7 @@
 
 #include "common/fwd.hpp"
 #include "common/type/memory_wrapper.hpp"
+#include "common/type/queue_wrapper.hpp"
 #include "common/parallelism/thread_pool.hpp"
 
 namespace Nano

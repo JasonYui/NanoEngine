@@ -13,8 +13,5 @@ namespace Nano
     using Array = std::array<T, MAX_SIZE>;
 
     template<typename T>
-    using Queue = std::queue<T>;
-
-    template<typename T>
     using Span = std::span<T>;
 }

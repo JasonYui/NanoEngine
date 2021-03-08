@@ -4,7 +4,7 @@
 #include <atomic>
 
 #include "common/fwd.hpp"
-#include "common/type/array_wrapper.hpp"
+#include "common/type/queue_wrapper.hpp"
 #include "common/type/memory_wrapper.hpp"
 #include "common/parallelism/task_scheduler.hpp"
 
