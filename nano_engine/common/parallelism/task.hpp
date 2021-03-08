@@ -53,8 +53,9 @@ namespace Nano
     {
         using Func = std::function<TRet()>;
     public:
-        Task(Func func) : ITask(), m_Func(func) {};
+        Task() = delete;
         Task(const Task& func) = delete;
+        Task(Func func) : ITask(), m_Func(func) {};
         Task(Task&& task) noexcept { MoveTask(std::forward<Task>(task)); }
 
         Task& operator= (Task&& task) noexcept
@@ -63,7 +64,7 @@ namespace Nano
             return *this;
         }
 
-        bool IsValid() const { return m_Status != TaskStatus::_Invalid && m_Future.valid(); }
+        bool IsValid() const { return m_Status != TaskStatus::_Invalid; }
 
         template<typename T>
         SharedPtr<Task<T>> Then(std::function<T()> func)
@@ -76,10 +77,17 @@ namespace Nano
         TRet Result()
         {
             if (!IsValid())
-            {
                 LOG_ERROR("task is invalid!");
+
+            if (m_Future.valid())
+            {
+                m_Result = m_Future.get();
+                return m_Result;
             }
-            return m_Future.get();
+            else
+            {
+                return m_Result;
+            }
         }
 
         void Wait() { if (m_Future.valid()) m_Future.wait(); }
@@ -112,7 +120,7 @@ namespace Nano
             }
             if (!m_ContinueTasks.empty())
             {
-                m_Status = TaskStatus::_WaitingForChild;
+                m_Status = TaskStatus::_Completed;
                 while (m_ContinueTasks.size() > 0)
                 {
                     SharedPtr<ITask> subTask = m_ContinueTasks.front();
@@ -129,6 +137,7 @@ namespace Nano
         }
     private:
         std::future<TRet> m_Future;
+        TRet m_Result;
         Func m_Func;
     };
 
